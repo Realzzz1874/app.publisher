@@ -1,1 +1,1 @@
-# publisher.app
+# publisher.app（发布者）
