@@ -1,1 +1,19 @@
+// COLORS
+
 $color_main: #63e2b7;
+$color_font_black: #1b1d1d;
+$color_font_white: #fff;
+$color_divider: rgb(239, 239, 245);
+
+// MIXIN
+@mixin flex($d, $j, $a) {
+  display: flex;
+  flex-direction: $d;
+  justify-content: $j;
+  align-items: $a;
+}
+
+@mixin wh($w, $h) {
+  width: $w;
+  height: $h;
+}

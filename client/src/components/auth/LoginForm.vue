@@ -1,0 +1,69 @@
+<template>
+  <div class="form">
+    <n-form ref="formRef" :model="loginForm" :rules="rules" size="large">
+      <n-form-item path="username">
+        <n-input v-model:value="loginForm.username" placeholder="请输入用户名">
+          <template #suffix> <n-icon :component="PersonCircle" /> </template
+        ></n-input>
+      </n-form-item>
+      <n-form-item path="password">
+        <n-input
+          type="password"
+          v-model:value="loginForm.password"
+          show-password-on="click"
+          placeholder="请输入密码"
+          :maxlength="8"
+        >
+          <template #password-visible-icon>
+            <n-icon :size="16" :component="GlassesOutline" />
+          </template>
+          <template #password-invisible-icon>
+            <n-icon :size="16" :component="Glasses" />
+          </template>
+        </n-input>
+      </n-form-item>
+    </n-form>
+    <n-button class="panel-button" size="large" type="primary" @click="login"> 登录 </n-button>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { reactive } from 'vue'
+
+import { NForm, NFormItem, NInput, NIcon, NButton } from 'naive-ui'
+import { PersonCircle, GlassesOutline, Glasses } from '@vicons/ionicons5'
+
+const loginForm = reactive({
+  username: '',
+  password: ''
+})
+
+const rules = {
+  username: {
+    required: true,
+    message: '请输入用户名',
+    trigger: 'blur'
+  },
+  password: {
+    required: true,
+    message: '请输入密码',
+    trigger: 'blur'
+  }
+}
+
+function login() {
+  console.log('loginForm', JSON.parse(JSON.stringify(loginForm)))
+}
+</script>
+
+<style scoped lang="scss">
+.form {
+  .n-form-item {
+    margin-top: -10px;
+  }
+  .panel-button {
+    width: 328px;
+    margin-top: 20px;
+  }
+}
+</style>
