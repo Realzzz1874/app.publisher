@@ -25,15 +25,31 @@
         </div>
       </div>
     </div>
+    <!--  -->
+    <div class="app-list-wrapper">
+      <div v-if="appList.length == 0">
+        <n-result status="404" title="空空如也" description="点击【左上角按钮】上传第一个应用吧" />
+      </div>
+      <div v-else>
+        <div class="card-item" v-for="(item, index) in appList" :key="index">
+          <AppCard />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { NIcon, NButton, NInput, NCheckbox, NCheckboxGroup, NSpace } from 'naive-ui'
+import { NIcon, NButton, NInput, NCheckbox, NCheckboxGroup, NSpace, NResult } from 'naive-ui'
 import { CloudUploadOutlined, ManageSearchOutlined } from '@vicons/material'
+
+import AppCard from './AppCard.vue'
+
 const keyword = ref('')
 const platforms = ref(['ios', 'android'])
+
+const appList = ref([1])
 </script>
 
 <style scoped lang="scss">
@@ -58,6 +74,11 @@ const platforms = ref(['ios', 'android'])
       border: 1px solid $color_main;
       background-color: $color_bg_grey;
     }
+  }
+
+  .app-list-wrapper {
+    width: 100%;
+    margin-top: 40px;
   }
 }
 </style>
