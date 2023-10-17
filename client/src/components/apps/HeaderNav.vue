@@ -1,6 +1,8 @@
 <template>
   <div class="header-nav">
-    <span class="sys-name">App.Publisher</span>
+    <span class="sys-name" @click="goMain"
+      ><n-gradient-text :size="20" type="success"> App.Publisher </n-gradient-text></span
+    >
     <div class="nav-opt">
       <div class="team-change">
         <n-dropdown trigger="click" :show-arrow="true" :options="teamOptions" @select="selectTeam">
@@ -38,11 +40,17 @@
 
 <script lang="ts" setup>
 import { reactive, computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-import { NDropdown, NIcon, NAvatar, NDrawer, NDrawerContent } from 'naive-ui'
+import { NDropdown, NIcon, NAvatar, NDrawer, NDrawerContent, NGradientText } from 'naive-ui'
 import { KeyboardArrowLeftRound, NotificationsNoneOutlined, PersonFilled } from '@vicons/material'
 
 import MessageList from './MessageList.vue'
+
+const router = useRouter()
+function goMain() {
+  router.push('/apps')
+}
 
 // 个人信息
 const userInfo = reactive({
@@ -97,6 +105,7 @@ const showMessage = ref(false)
     @include flex(row, center, center);
     box-sizing: border-box;
     border-bottom: 4px solid $color_main;
+    cursor: pointer;
   }
   .nav-opt {
     flex-grow: 1;
