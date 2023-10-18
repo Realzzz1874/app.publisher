@@ -30,7 +30,6 @@ import SlideNav from '../components/apps/SideNav.vue'
     width: calc(100% - 192px);
     overflow: scroll;
     overflow-y: scroll;
-    // padding: 8px 8px;
   }
 }
 </style>

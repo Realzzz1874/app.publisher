@@ -30,7 +30,7 @@
       <div v-if="appList.length == 0">
         <n-result status="404" title="空空如也" description="点击【左上角按钮】上传第一个应用吧" />
       </div>
-      <div v-else>
+      <div v-else class="app-list-content">
         <div class="card-item" v-for="(item, index) in appList" :key="index">
           <AppCard />
         </div>
@@ -79,6 +79,15 @@ const appList = ref([1])
   .app-list-wrapper {
     width: 100%;
     margin-top: 40px;
+    .app-list-content {
+      @include flex(row, flex-start, center);
+      flex-wrap: wrap;
+      padding-bottom: 40px;
+      .card-item {
+        margin-right: 20px;
+        margin-bottom: 20px;
+      }
+    }
   }
 }
 </style>
