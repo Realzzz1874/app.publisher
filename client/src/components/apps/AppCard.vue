@@ -3,9 +3,10 @@
     <n-card
       :hoverable="true"
       content-style="display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 10px;"
+      footer-style="display: flex; flex-direction: row; justify-content: flex-end; align-items: center; padding: 10px;"
     >
       <template #header>
-        <span class="app-name">{{ appInfo.appName }}</span>
+        <span class="app-name" @click="goDetail">{{ appInfo.appName }}</span>
       </template>
       <template #header-extra>
         <n-icon :size="36" :component="AppleFilled" v-if="appInfo.platform == 'ios'" />
@@ -16,7 +17,7 @@
           v-if="appInfo.platform == 'android'"
         />
       </template>
-      <n-avatar :size="60" :src="appInfo.icon" :fallback-src="appIconError" />
+      <n-avatar :size="60" :src="appInfo.icon" :fallback-src="appIconError" @click="goDetail" />
       <p class="first-p">
         <span class="label">下载地址:</span
         ><span class="value download" @click="copy">{{ appInfo.downloadUrl }}</span>
@@ -29,6 +30,13 @@
         <span class="label">当前版本:</span
         ><span class="value">{{ appInfo.releaseVersionCode }}</span>
       </p>
+
+      <template #footer>
+        <n-space>
+          <n-button tertiary type="default" size="tiny"> 编辑 </n-button>
+          <n-button tertiary type="default" size="tiny"> 预览 </n-button>
+        </n-space>
+      </template>
     </n-card>
   </div>
 </template>
@@ -37,7 +45,7 @@
 import { reactive } from 'vue'
 import useClipboard from 'vue-clipboard3'
 
-import { NCard, NIcon, NAvatar, useMessage } from 'naive-ui'
+import { NCard, NIcon, NAvatar, useMessage, NButton, NSpace } from 'naive-ui'
 import { AppleFilled, AndroidFilled } from '@vicons/material'
 
 const message = useMessage()
@@ -50,8 +58,14 @@ const appInfo = reactive({
   packageName: 'com.mobile.ynetbank',
   releaseVersionCode: '1092',
   icon: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-  downloadUrl: 'https://store.lbapp.cn:11443/mpaas-dev-ios'
+  downloadUrl: 'https://store.lbapp.cn:11443/mpaas-dev-ios',
+  id: 'test-id'
 })
+
+const emit = defineEmits(['go-app-detail'])
+function goDetail() {
+  emit('go-app-detail', { appId: appInfo.id, appName: appInfo.appName })
+}
 async function copy() {
   try {
     await toClipboard(appInfo.downloadUrl)
@@ -72,6 +86,9 @@ async function copy() {
       cursor: pointer;
       font-weight: 500;
       font-size: $color_font_black;
+    }
+    .n-avatar {
+      cursor: pointer;
     }
     p {
       font-size: 10px;

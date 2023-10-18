@@ -32,7 +32,7 @@
       </div>
       <div v-else class="app-list-content">
         <div class="card-item" v-for="(item, index) in appList" :key="index">
-          <AppCard />
+          <AppCard @go-app-detail="goAppDetail" />
         </div>
       </div>
     </div>
@@ -41,15 +41,24 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { NIcon, NButton, NInput, NCheckbox, NCheckboxGroup, NSpace, NResult } from 'naive-ui'
 import { CloudUploadOutlined, ManageSearchOutlined } from '@vicons/material'
 
+import mitt from '@/utils/mitt'
+
 import AppCard from './AppCard.vue'
+const router = useRouter()
 
 const keyword = ref('')
 const platforms = ref(['ios', 'android'])
 
 const appList = ref([1])
+
+function goAppDetail(e: { appId: String; appName: String }) {
+  router.push('/about')
+  mitt.emit('app-detail', e.appName)
+}
 </script>
 
 <style scoped lang="scss">

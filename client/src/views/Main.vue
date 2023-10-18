@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import HeaderNav from '../components/apps/HeaderNav.vue'
-import SlideNav from '../components/apps/SideNav.vue'
+import HeaderNav from '@/components/main/HeaderNav.vue'
+import SlideNav from '@/components/main/SideNav.vue'
 </script>
 
 <style scoped lang="scss">
