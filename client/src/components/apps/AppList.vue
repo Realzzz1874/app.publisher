@@ -41,13 +41,13 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { NIcon, NButton, NInput, NCheckbox, NCheckboxGroup, NSpace, NResult } from 'naive-ui'
 import { CloudUploadOutlined, ManageSearchOutlined } from '@vicons/material'
 
 import AppCard from './AppCard.vue'
-// const router = useRouter()
-defineProps<{
+const router = useRouter()
+const props = defineProps<{
   teamId: string
 }>()
 
@@ -56,8 +56,9 @@ const platforms = ref(['ios', 'android'])
 
 const appList = ref([1])
 
-function goAppDetail(e: { appId: string; appName: string }) {
-  console.log('e', e)
+function goAppDetail(appId: string) {
+  console.log('appId', appId)
+  router.push(`/team/${props.teamId}/app/${appId}`)
 }
 </script>
 
@@ -66,7 +67,7 @@ function goAppDetail(e: { appId: string; appName: string }) {
   @include wh(100%, 100%);
   box-sizing: border-box;
   // background-color: $color_bg_white;
-  padding: 8px 10px;
+  // padding: 8px 10px;
   .header-opt {
     @include wh(100%, 60px);
     @include flex(row, space-between, center);

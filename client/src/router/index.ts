@@ -20,6 +20,12 @@ const router = createRouter({
           props: true
         },
         {
+          path: '/team/:teamId/app/:appId',
+          name: 'appDetail',
+          component: () => import('../components/apps/AppDetail.vue'),
+          props: true
+        },
+        {
           path: '/about',
           name: 'teamAbout',
           component: () => import('../views/AboutView.vue')

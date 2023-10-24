@@ -64,7 +64,7 @@ const appInfo = reactive({
 
 const emit = defineEmits(['go-app-detail'])
 function goDetail() {
-  emit('go-app-detail', { appId: appInfo.id, appName: appInfo.appName })
+  emit('go-app-detail', appInfo.id)
 }
 async function copy() {
   try {

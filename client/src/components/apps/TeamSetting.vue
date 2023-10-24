@@ -81,7 +81,7 @@ const members = reactive([
 
 <style scoped lang="scss">
 .team-setting {
-  padding: 8px 10px;
+  // padding: 8px 10px;
   height: 100%;
 
   .name-wrapper {
@@ -116,7 +116,7 @@ const members = reactive([
 
   .members {
     margin-top: 20px;
-    height: calc(100vh - 234px);
+    height: calc(100vh - 224px);
     background-color: $color_bg_white;
     // border-radius: 8px;
     padding: 10px;

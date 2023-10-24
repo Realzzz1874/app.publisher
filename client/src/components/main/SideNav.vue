@@ -6,6 +6,10 @@
       v-model:value="selectedMenuKey"
       @update:value="changeMenu"
     />
+    <n-modal v-model:show="showAddTeam" preset="dialog" title="创建团队" :show-icon="false">
+      <div>内容</div>
+      <template #action> </template>
+    </n-modal>
   </div>
 </template>
 
@@ -13,8 +17,8 @@
 import { type Component, h, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { type MenuOption, NIcon, NMenu } from 'naive-ui'
-import { GroupAddSharp } from '@vicons/material'
+import { type MenuOption, NIcon, NMenu, NModal, NCard } from 'naive-ui'
+import { GroupAddSharp, GroupFilled } from '@vicons/material'
 
 const router = useRouter()
 
@@ -33,9 +37,14 @@ onMounted(() => {
 const selectedMenuKey = ref('')
 const menuOptions: MenuOption[] = [
   {
+    label: '创建团队',
+    key: 'addTeam',
+    icon: renderIcon(GroupAddSharp)
+  },
+  {
     label: '团队管理',
     key: 'teams',
-    icon: renderIcon(GroupAddSharp),
+    icon: renderIcon(GroupFilled),
     children: [
       {
         label: 'mpass-dev',
@@ -44,8 +53,15 @@ const menuOptions: MenuOption[] = [
     ]
   }
 ]
+
+const showAddTeam = ref(false)
 function changeMenu(key: string) {
-  router.push(`/team/${key}`)
+  if (key == 'addTeam') {
+    // 创建团队
+    showAddTeam.value = true
+  } else {
+    router.push(`/team/${key}`)
+  }
 }
 </script>
 
