@@ -41,23 +41,23 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { NIcon, NButton, NInput, NCheckbox, NCheckboxGroup, NSpace, NResult } from 'naive-ui'
 import { CloudUploadOutlined, ManageSearchOutlined } from '@vicons/material'
 
-import mitt from '@/utils/mitt'
-
 import AppCard from './AppCard.vue'
-const router = useRouter()
+// const router = useRouter()
+defineProps<{
+  teamId: string
+}>()
 
 const keyword = ref('')
 const platforms = ref(['ios', 'android'])
 
 const appList = ref([1])
 
-function goAppDetail(e: { appId: String; appName: String }) {
-  router.push('/about')
-  mitt.emit('app-detail', e.appName)
+function goAppDetail(e: { appId: string; appName: string }) {
+  console.log('e', e)
 }
 </script>
 
@@ -66,7 +66,7 @@ function goAppDetail(e: { appId: String; appName: String }) {
   @include wh(100%, 100%);
   box-sizing: border-box;
   // background-color: $color_bg_white;
-  padding: 8px 26px;
+  padding: 8px 10px;
   .header-opt {
     @include wh(100%, 60px);
     @include flex(row, space-between, center);
@@ -87,7 +87,7 @@ function goAppDetail(e: { appId: String; appName: String }) {
 
   .app-list-wrapper {
     width: 100%;
-    margin-top: 40px;
+    margin-top: 20px;
     .app-list-content {
       @include flex(row, flex-start, center);
       flex-wrap: wrap;

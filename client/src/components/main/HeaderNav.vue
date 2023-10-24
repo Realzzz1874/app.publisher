@@ -4,21 +4,6 @@
       ><n-gradient-text :size="20" type="success"> App.Publisher </n-gradient-text></span
     >
     <div class="nav-opt">
-      <div class="team-change" v-if="scene == SCENES.appList">
-        <n-dropdown trigger="click" :show-arrow="true" :options="teamOptions" @select="selectTeam">
-          <div class="current-team">
-            <span class="team-name">{{ teamName }}</span>
-            <n-icon :size="24" :component="KeyboardArrowLeftRound" />
-          </div>
-        </n-dropdown>
-      </div>
-      <div class="team-change" v-if="scene == SCENES.appDetail">
-        <div class="current-team app-name-scene" @click="goAppList">
-          <span class="team-name">{{ teamName }}</span>
-          <n-icon :size="24" :component="KeyboardArrowLeftRound" />
-        </div>
-        <span>{{ appName }}</span>
-      </div>
       <div class="user-info">
         <n-icon :size="24" :component="NotificationsNoneOutlined" @click="showMessage = true" />
         <n-drawer v-model:show="showMessage" :width="502" placement="right">
@@ -46,40 +31,19 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, computed, ref, onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { NDropdown, NIcon, NAvatar, NDrawer, NDrawerContent, NGradientText } from 'naive-ui'
-import { KeyboardArrowLeftRound, NotificationsNoneOutlined, PersonFilled } from '@vicons/material'
+import { NotificationsNoneOutlined, PersonFilled } from '@vicons/material'
 
 import MessageList from './MessageList.vue'
-import mitt from '@/utils/mitt'
 
 const router = useRouter()
-
-// 常量定义 start
-const SCENES = {
-  appDetail: 'appDetail',
-  appList: 'appList'
-}
-// 常量定义 end
-
-onMounted(() => {
-  mitt.on('app-detail', (e: string) => {
-    appName.value = e
-    scene.value = SCENES.appDetail
-  })
-})
-
-// 当前展示场景
-const scene = ref(SCENES.appList)
 
 function goMain() {
   router.push('/apps')
 }
-
-// 应用名称
-const appName = ref('')
 
 // 个人信息
 const userInfo = reactive({
@@ -99,30 +63,6 @@ const userOptions = reactive([
 function selectUserOption(key: string) {
   console.log('key', key)
 }
-
-// 选择团队
-const currentTeam = reactive({
-  name: 'mpaas-dev',
-  role: 'owner',
-  _id: '6128b3b2e7abe6001ede5b95'
-})
-const teamName = computed(() => {
-  return currentTeam.name
-})
-const teamOptions = reactive([
-  {
-    label: 'mpaas-dev',
-    key: '6128b3b2e7abe6001ede5b95'
-  }
-])
-function selectTeam(key: string | number) {
-  console.log('key', key)
-}
-function goAppList() {
-  scene.value = SCENES.appList
-  router.push('/apps')
-}
-
 // 消息
 const showMessage = ref(false)
 </script>
@@ -143,26 +83,8 @@ const showMessage = ref(false)
   .nav-opt {
     flex-grow: 1;
     height: 60px;
-    @include flex(row, space-between, center);
+    @include flex(row, flex-end, center);
     padding: 0 30px;
-
-    .team-change {
-      @include flex(row, flex-start, center);
-    }
-    .current-team {
-      @include flex(row, flex-start, center);
-      cursor: pointer;
-      .n-icon {
-        transform: rotate(-90deg);
-        margin-top: 2px;
-      }
-    }
-    .app-name-scene {
-      .n-icon {
-        transform: rotate(180deg);
-        margin-top: 2px;
-      }
-    }
 
     .user-info {
       @include flex(row, flex-end, center);
