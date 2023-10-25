@@ -85,7 +85,7 @@ async function copy() {
     .app-name {
       cursor: pointer;
       font-weight: 500;
-      font-size: $color_font_black;
+      color: $color_font_black;
     }
     .n-avatar {
       cursor: pointer;
