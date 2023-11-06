@@ -61,7 +61,14 @@
     <div class="app-wrapper">
       <n-tabs type="line" animated>
         <n-tab-pane name="version" tab="版本信息">
-          <div class="wrapper-list"></div>
+          <div class="wrapper-list">
+            <n-data-table
+              v-model:checked-row-keys="selectedVersion"
+              @update:checked-row-keys="selectedVersionChange"
+              :columns="versionColumns()"
+              :data="versionList"
+            />
+          </div>
         </n-tab-pane>
         <n-tab-pane name="appSetting" tab="应用设置">
           <div class="wrapper-list">
@@ -112,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import {
   NTabs,
   NTabPane,
@@ -124,7 +131,9 @@ import {
   NEllipsis,
   NInput,
   NRadio,
-  NRadioGroup
+  NRadioGroup,
+  NDataTable,
+  type DataTableColumns
 } from 'naive-ui'
 import {
   AppleFilled,
@@ -152,8 +161,72 @@ const appInfo = reactive({
   installType: 1,
   autoPublish: 1
 })
-
 const inputTrim = (value: string) => !value.startsWith(' ') && !value.endsWith(' ')
+
+const selectedVersion = ref([1])
+type VersionRowData = {
+  key: number
+  id: string
+  version: string
+  updateTime: number
+  size: string
+  downloadCount: number
+  updateLog: string
+}
+const versionColumns = (): DataTableColumns<VersionRowData> => {
+  return [
+    {
+      type: 'selection',
+      multiple: false
+    },
+    {
+      title: '版本',
+      key: 'version'
+    },
+    {
+      title: '更新时间',
+      key: 'updateTime'
+    },
+    {
+      title: '文件大小',
+      key: 'size'
+    },
+    {
+      title: '下载次数',
+      key: 'downloadCount'
+    },
+    {
+      title: '更新日志',
+      key: 'updateLog'
+    }
+  ]
+}
+
+const versionList = reactive([
+  {
+    key: 1,
+    id: '1001',
+    version: '1.0.0.1',
+    updateTime: '2023-02-11',
+    size: '20.1M',
+    downloadCount: 101,
+    updateLog: 'test'
+  },
+  {
+    key: 2,
+    id: '1001',
+    version: '1.0.0.1',
+    updateTime: '2023-02-11',
+    size: '20.1M',
+    downloadCount: 101,
+    updateLog: 'test'
+  }
+])
+
+function selectedVersionChange(keys: Array<string | number>) {
+  console.log('keys', keys)
+  selectedVersion.value = keys as number[]
+}
 </script>
 
 <style scoped lang="scss">
@@ -219,7 +292,7 @@ const inputTrim = (value: string) => !value.startsWith(' ') && !value.endsWith('
         .setting-val {
           @include flex(row, flex-start, center);
           margin-left: 14px;
-          ::v-deep .n-input__border {
+          ::v-deep(.n-input__border) {
             border: none;
             border-bottom: 1px solid $color_border;
           }
