@@ -25,6 +25,11 @@
             <span class="user-name">{{ userInfo.name }}</span>
           </div>
         </n-dropdown>
+        <n-drawer v-model:show="showSettings" :width="502" placement="right">
+          <n-drawer-content title="个人设置" closable>
+            <UserSettings :userId="userInfo.id" @close-settings="closeSettings" />
+          </n-drawer-content>
+        </n-drawer>
       </div>
     </div>
   </div>
@@ -38,6 +43,7 @@ import { NDropdown, NIcon, NAvatar, NDrawer, NDrawerContent, NGradientText } fro
 import { NotificationsNoneOutlined, PersonFilled } from '@vicons/material'
 
 import MessageList from './MessageList.vue'
+import UserSettings from './UserSettings.vue'
 
 const router = useRouter()
 
@@ -62,9 +68,16 @@ const userOptions = reactive([
 ])
 function selectUserOption(key: string) {
   console.log('key', key)
+  if (key == 'settings') {
+    showSettings.value = true
+  }
 }
 // 消息
 const showMessage = ref(false)
+const showSettings = ref(false)
+function closeSettings() {
+  showSettings.value = false
+}
 </script>
 
 <style scoped lang="scss">

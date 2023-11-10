@@ -66,8 +66,6 @@ function goAppDetail(appId: string) {
 .app-list-block {
   @include wh(100%, 100%);
   box-sizing: border-box;
-  // background-color: $color_bg_white;
-  // padding: 8px 10px;
   .header-opt {
     @include wh(100%, 60px);
     @include flex(row, space-between, center);

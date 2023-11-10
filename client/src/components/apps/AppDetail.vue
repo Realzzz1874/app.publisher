@@ -49,13 +49,19 @@
               <span class="item-val">{{ appInfo.downloadUrl }}</span>
             </n-ellipsis>
           </div>
-          <div class="right-item">
+          <!-- <div class="right-item">
             <span class="label">App ID:</span>
             <n-ellipsis style="max-width: 400px"
               ><span class="item-val">{{ appInfo.id }}</span></n-ellipsis
             >
-          </div></n-space
-        >
+          </div> -->
+          <div class="right-item">
+            <span class="label">今日下载次数:</span>
+            <span class="item-val">30</span>
+            <span class="label second">总下载次数:</span>
+            <span class="item-val">100</span>
+          </div>
+        </n-space>
       </div>
     </div>
     <div class="app-wrapper">

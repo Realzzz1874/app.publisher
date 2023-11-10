@@ -33,7 +33,7 @@
 
       <template #footer>
         <n-space>
-          <n-button tertiary type="default" size="tiny"> 编辑 </n-button>
+          <n-button tertiary type="default" size="tiny" @click="goDetail"> 编辑 </n-button>
           <n-button tertiary type="default" size="tiny"> 预览 </n-button>
         </n-space>
       </template>
