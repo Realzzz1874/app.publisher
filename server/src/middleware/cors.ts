@@ -10,7 +10,7 @@ const cors = KoaCors({
       return false;
     }
   },
-  maxAge: 5,
+  maxAge: 5 * 24 * 60 * 60,
   credentials: true,
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization', 'Accept'],

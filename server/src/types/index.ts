@@ -18,6 +18,8 @@ export enum ErrorResponseCode {
   DEFAULT_ERROR_CODE = 10000,
   // 参数不正确
   INVALID_PARAMS_CODE = 422,
+  // 未登录
+  UN_AUTH = 401,
 }
 
 // system error message
@@ -31,7 +33,7 @@ export type TSuccess = (data?: any, status?: ResponseStatus) => void;
 // ctx.error()
 export type TError = (
   message: ErrorResponseMessage | string,
-  code?: ErrorResponseCode | number,
+  code?: ErrorResponseCode,
   data?: any,
   status?: ResponseStatus
 ) => void;

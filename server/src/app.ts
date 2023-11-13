@@ -29,7 +29,7 @@ class Application {
     Middleware(this.app);
 
     // routes
-    this.app.use(router.routes());
+    this.app.use(router.routes()).use(router.allowedMethods());
 
     this.app.use(async (ctx: Context, next: () => Promise<any>) => {
       const path = ctx.request.path;
