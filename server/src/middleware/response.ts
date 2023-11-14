@@ -14,13 +14,11 @@ const response = async (ctx: Context, next: Koa.Next) => {
   // error
   ctx.error = (
     message = '',
-    code = Types.ErrorResponseCode.DEFAULT_ERROR_CODE,
-    data = null,
-    status = Types.ResponseStatus.SYSTEM_ERROR
+    status = Types.ResponseStatus.SYSTEM_ERROR,
+    data = null
   ) => {
     ctx.status = status;
     ctx.body = {
-      code,
       message,
       data,
       t: new Date().getTime(),

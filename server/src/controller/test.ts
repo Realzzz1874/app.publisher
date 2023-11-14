@@ -6,12 +6,12 @@ export default class TestController {
   }
 
   static async testPost(ctx: Context) {
-    // const params = ctx.request.body;
-    const t = sign('123');
-    console.log('t', t);
-    ctx.success(t);
+    const params = ctx.request.body;
+    // const t = sign('123454321');
+    // console.log('t', t);
+    // ctx.success(t);
 
-    // console.log('testPost ====>', params);
-    // ctx.success(params);
+    console.log('testPost ====>', params);
+    ctx.success(params);
   }
 }

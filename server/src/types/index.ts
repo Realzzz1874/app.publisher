@@ -1,4 +1,8 @@
+// import { ParameterizedContext } from 'koa';
 declare module 'koa' {
+  // interface ParameterizedContext {
+  //   body: any;
+  // }
   interface DefaultState {}
   interface DefaultContext {
     success: TSuccess;
@@ -10,16 +14,11 @@ declare module 'koa' {
 export enum ResponseStatus {
   SUCCESS = 200,
   SYSTEM_ERROR = 500,
-}
-
-// system error code
-export enum ErrorResponseCode {
-  // 系统错误
-  DEFAULT_ERROR_CODE = 10000,
   // 参数不正确
-  INVALID_PARAMS_CODE = 422,
-  // 未登录
+  INVALID_PARAMS = 422,
+  // 未授权
   UN_AUTH = 401,
+  BAD_REQUEST = 400,
 }
 
 // system error message
@@ -33,7 +32,6 @@ export type TSuccess = (data?: any, status?: ResponseStatus) => void;
 // ctx.error()
 export type TError = (
   message: ErrorResponseMessage | string,
-  code?: ErrorResponseCode,
-  data?: any,
-  status?: ResponseStatus
+  status?: ResponseStatus,
+  data?: any
 ) => void;

@@ -1,15 +1,6 @@
 import * as KoaCors from 'koa2-cors';
 const cors = KoaCors({
-  origin: function (ctx) {
-    // 设置允许来自指定域名请求
-    const whiteList = ['http://localhost:3031']; //可跨域白名单
-    const url = ctx.header.referer;
-    if (whiteList.includes(url)) {
-      return url;
-    } else {
-      return false;
-    }
-  },
+  origin: '*',
   maxAge: 5 * 24 * 60 * 60,
   credentials: true,
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
