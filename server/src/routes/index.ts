@@ -14,9 +14,10 @@ router.prefix('/api');
 // 不需要 token
 router.get('/test', TestController.testGet);
 router.post('/login', AuthController.login);
+router.post('/register', AuthController.register);
 
 // 需要 token
-// router.use(jwtMiddleware);
+router.use(jwtMiddleware);
 router.post('/test', TestController.testPost);
 
 // 注册地址 ---- end
