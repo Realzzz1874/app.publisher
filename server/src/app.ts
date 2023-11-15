@@ -1,12 +1,10 @@
 import * as Koa from 'koa';
 import * as Logger from 'koa-logger';
-// import { koaBody } from 'koa-body';
 import * as bodyParser from 'koa-bodyparser';
 import { Context } from '@/core/koa';
 import Middleware from './middleware';
 import router from './routes';
-
-import './config/index';
+import connectToMongoDB from './database/mongodb';
 
 const __DEV__ = process.env.NODE_ENV === 'dev';
 
@@ -22,15 +20,12 @@ class Application {
       this.app.use(Logger());
     }
 
-    // this.app.use(
-    //   koaBody({
-    //     multipart: true,
-    //   })
-    // );
     this.app.use(bodyParser());
 
     // 注册中间件
     Middleware(this.app);
+    // 连接 MongoDB
+    connectToMongoDB();
 
     // routes
     this.app.use(router.routes()).use(router.allowedMethods());
