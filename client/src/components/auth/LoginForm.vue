@@ -1,6 +1,6 @@
 <template>
   <div class="form">
-    <n-form ref="formRef" :model="loginForm" :rules="rules" size="large">
+    <n-form ref="loginFormRef" :model="loginForm" :rules="rules" size="large">
       <n-form-item path="username">
         <n-input v-model:value="loginForm.username" placeholder="请输入用户名">
           <template #suffix> <n-icon :component="PersonCircle" /> </template
@@ -28,11 +28,21 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-import { NForm, NFormItem, NInput, NIcon, NButton } from 'naive-ui'
+import { type FormInst, NForm, NFormItem, NInput, NIcon, NButton, useMessage } from 'naive-ui'
 import { PersonCircle, GlassesOutline, Glasses } from '@vicons/ionicons5'
 
+import { loginApi } from '../../api/module/auth'
+import { UserStore } from '@/store/module/user'
+
+const userStore = UserStore()
+const router = useRouter()
+const message = useMessage()
+
+const loading = ref(false)
+const loginFormRef = ref<FormInst | null>()
 const loginForm = reactive({
   username: '',
   password: ''
@@ -51,8 +61,24 @@ const rules = {
   }
 }
 
-function login() {
-  console.log('loginForm', JSON.parse(JSON.stringify(loginForm)))
+const login = async () => {
+  if (loading.value) return
+  loginFormRef.value
+    ?.validate(async (errors) => {
+      if (!errors) {
+        loading.value = true
+        const res = await loginApi(loginForm)
+        if (res?.data) {
+          userStore.setToken(res.data.token)
+          message.success('登录成功')
+          setTimeout(() => {
+            router.replace('/')
+          }, 1500)
+        }
+        loading.value = false
+      }
+    })
+    .catch(() => {})
 }
 </script>
 

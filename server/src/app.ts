@@ -3,6 +3,7 @@ import * as Logger from 'koa-logger';
 import * as bodyParser from 'koa-bodyparser';
 import { Context } from '@/core/koa';
 import Middleware from './middleware';
+import * as cors from 'koa2-cors';
 import router from './routes';
 import connectToMongoDB from './database/mongodb';
 
@@ -24,6 +25,8 @@ class Application {
 
     // 注册中间件
     Middleware(this.app);
+    // 允许跨域
+    this.app.use(cors({ credentials: true }));
     // 连接 MongoDB
     connectToMongoDB();
 

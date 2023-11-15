@@ -1,6 +1,6 @@
 <template>
   <div class="form">
-    <n-form ref="formRef" :model="registerForm" :rules="rules" size="large">
+    <n-form ref="registerFormRef" :model="registerForm" :rules="rules" size="large">
       <n-form-item path="username">
         <n-input v-model:value="registerForm.username" placeholder="请输入用户名">
           <template #suffix> <n-icon :component="PersonCircle" /> </template
@@ -33,17 +33,25 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 
-import { NForm, NFormItem, NInput, NIcon, NButton } from 'naive-ui'
+import { type FormInst, NForm, NFormItem, NInput, NIcon, NButton, useMessage } from 'naive-ui'
 import { PersonCircle, GlassesOutline, Glasses, Mail } from '@vicons/ionicons5'
+
+import { registerApi } from '../../api/module/auth'
+import { UserStore } from '@/store/module/user'
+import { useRouter } from 'vue-router'
+
+const userStore = UserStore()
+const router = useRouter()
+const message = useMessage()
 
 const registerForm = reactive({
   username: '',
   email: '',
   password: ''
 })
-
+const registerFormRef = ref<FormInst | null>()
 const rules = {
   username: {
     required: true,
@@ -61,9 +69,26 @@ const rules = {
     trigger: 'blur'
   }
 }
+const loading = ref(false)
 
-function register() {
-  console.log('registerForm', JSON.parse(JSON.stringify(registerForm)))
+const register = async () => {
+  if (loading.value) return
+  registerFormRef.value
+    ?.validate(async (errors) => {
+      if (!errors) {
+        loading.value = true
+        const res = await registerApi(registerForm)
+        if (res?.data) {
+          userStore.setToken(res.data.token)
+          message.success('注册成功')
+          setTimeout(() => {
+            router.replace('/')
+          }, 1500)
+        }
+        loading.value = false
+      }
+    })
+    .catch(() => {})
 }
 </script>
 

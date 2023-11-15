@@ -21,7 +21,7 @@ export default class AuthController {
         const val = await bcrypt.compare(password as string, user.password);
         if (val) {
           const t = sign(user._id);
-          ctx.success(t);
+          ctx.success({ token: t, user });
         } else {
           ctx.error('用户名或密码不正确', ResponseStatus.BAD_REQUEST);
         }
@@ -49,7 +49,8 @@ export default class AuthController {
           bcryptPassword,
           email
         );
-        ctx.success(user);
+        const t = sign(user._id);
+        ctx.success({ token: t, user });
       } else {
         ctx.error('用户已存在', ResponseStatus.BAD_REQUEST);
       }
