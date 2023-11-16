@@ -1,13 +1,15 @@
 import TeamModel from '../model/team';
 import UserModel from '../model/user';
 import mongoose from '../database/mongodb';
+import HttpError from '../interface/HttpError';
+import { ResponseStatus } from '../types';
 
 export default class TeamService {
   // 创建团队
   static async createTeam(name: string, creatorId: string) {
     const user = await UserModel.findById(creatorId);
     if (!user) {
-      throw new Error('');
+      throw new HttpError(ResponseStatus.BAD_REQUEST, '');
     }
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -47,10 +49,9 @@ export default class TeamService {
       },
       '_id, members'
     );
-
     if (!team) {
       // 无权修改
-      throw new Error('');
+      throw new HttpError(ResponseStatus.BAD_REQUEST, '无权修改此团队');
     }
     // 事务更新
     const session = await mongoose.startSession();

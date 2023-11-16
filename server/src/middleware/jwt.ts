@@ -1,6 +1,5 @@
 import * as Koa from 'koa';
 import { Context } from '@/core/koa';
-import * as jwt from 'jsonwebtoken';
 import { ResponseStatus } from '../types';
 import { verify } from '../utils/jwt';
 
@@ -10,16 +9,12 @@ interface User {
 }
 
 const jwtMiddleware = async (ctx: Context, next: Koa.Next) => {
-  try {
-    const token = ctx.header.authorization?.split(' ')[1];
-    if (!token) {
-      return ctx.error('', ResponseStatus.UN_AUTH);
-    }
-    const decoded = verify(token) as User;
-    ctx.userId = decoded.userId;
-    await next();
-  } catch {
+  const token = ctx.header.authorization?.split(' ')[1];
+  if (!token) {
     return ctx.error('', ResponseStatus.UN_AUTH);
   }
+  const decoded = verify(token) as User;
+  ctx.userId = decoded.userId;
+  await next();
 };
 export default jwtMiddleware;
