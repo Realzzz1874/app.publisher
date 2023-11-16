@@ -24,4 +24,15 @@ export namespace Auth {
     password: string
     email: string
   }
+  export interface ResetPasswordDTO {
+    oldPassword: string
+    newPassword: string
+  }
+}
+
+export namespace User {
+  export interface BaseInfo {
+    username: string
+    email: string
+  }
 }

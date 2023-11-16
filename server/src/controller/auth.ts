@@ -6,6 +6,7 @@ import config from '../config/index';
 import { loginSchema, registerSchema } from './auth.schema';
 import { ResponseStatus } from '../types';
 import UserService from '../service/user';
+import { IUser } from '../interface/user';
 
 export default class AuthController {
   static async login(ctx: Context) {
@@ -21,7 +22,12 @@ export default class AuthController {
         const val = await bcrypt.compare(password as string, user.password);
         if (val) {
           const t = sign(user._id);
-          ctx.success({ token: t, user });
+          const u: IUser.BaseUser = {
+            username: user.username,
+            email: user.email,
+            _id: user._id,
+          };
+          ctx.success({ token: t, user: u });
         } else {
           ctx.error('用户名或密码不正确', ResponseStatus.BAD_REQUEST);
         }
@@ -50,7 +56,12 @@ export default class AuthController {
           email
         );
         const t = sign(user._id);
-        ctx.success({ token: t, user });
+        const u: IUser.BaseUser = {
+          username: user.username,
+          email: user.email,
+          _id: user._id,
+        };
+        ctx.success({ token: t, user: u });
       } else {
         ctx.error('用户已存在', ResponseStatus.BAD_REQUEST);
       }

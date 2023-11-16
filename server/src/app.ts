@@ -5,7 +5,7 @@ import { Context } from '@/core/koa';
 import Middleware from './middleware';
 import * as cors from 'koa2-cors';
 import router from './routes';
-import connectToMongoDB from './database/mongodb';
+import db from './database/mongodb';
 
 const __DEV__ = process.env.NODE_ENV === 'dev';
 
@@ -28,7 +28,7 @@ class Application {
     // 允许跨域
     this.app.use(cors({ credentials: true }));
     // 连接 MongoDB
-    connectToMongoDB();
+    db;
 
     // routes
     this.app.use(router.routes()).use(router.allowedMethods());

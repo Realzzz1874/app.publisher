@@ -7,13 +7,15 @@ const cluster = config.MONGODB_CLUSTER;
 const database = config.MONGODB_DATABASE;
 
 const MONGO_URI = `mongodb+srv://${username}:${password}@${cluster}.mongodb.net/${database}?retryWrites=true&w=majority`;
-const connectToMongoDB = async () => {
-  try {
-    await mongoose.connect(MONGO_URI);
-    console.log('====> Connected to MongoDB :)');
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-  }
-};
-
-export default connectToMongoDB;
+mongoose.connect(MONGO_URI);
+const db = mongoose.connection;
+db.on('error', (error) => {
+  console.error('MongoDB run error: ', error);
+});
+db.once('open', () => {
+  console.log('====> Connected to MongoDB :)');
+});
+process.on('exit', () => {
+  db.close();
+});
+export default mongoose;
