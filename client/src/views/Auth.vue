@@ -30,21 +30,12 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { NDivider } from 'naive-ui'
 
 import LoginForm from '../components/auth/LoginForm.vue'
 import RegisterForm from '../components/auth/RegisterForm.vue'
 import ForgetForm from '../components/auth/ForgetForm.vue'
-import { UserStore } from '@/store/module/user'
-
-const userStore = UserStore()
-const router = useRouter()
-// 如果存在 token，则直接跳转首页
-if (userStore.token) {
-  router.replace('/')
-}
 
 interface TypedObject {
   [key: string]: string
