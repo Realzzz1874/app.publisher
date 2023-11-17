@@ -2,10 +2,6 @@
   <div class="message-list">message</div>
 </template>
 
-<script lang="ts" setup>
-defineProps<{
-  userId: string
-}>()
-</script>
+<script lang="ts" setup></script>
 
 <style scoped lang="scss"></style>

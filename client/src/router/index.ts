@@ -4,7 +4,7 @@ import { UserStore } from '@/store/module/user'
 const staticRouter: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/main'
+    redirect: '/team'
   },
   {
     path: '/auth',
@@ -12,7 +12,7 @@ const staticRouter: RouteRecordRaw[] = [
     component: () => import('../views/Auth.vue')
   },
   {
-    path: '/main',
+    path: '/team',
     name: 'main',
     component: () => import('../views/Main.vue'),
     children: [

@@ -1,10 +1,10 @@
 import axios from '../index'
 
-import { type Auth } from '../interface'
+import { type Auth, type User } from '../interface'
 
 // 登录
 export const loginApi = (params: Auth.LoginDTO) => {
-  return axios.post<Auth.LoginResDTO>('/login', params, { silence: false })
+  return axios.post<User.MyInfo>('/login', params, { silence: false })
 }
 
 // 注册

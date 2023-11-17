@@ -7,6 +7,7 @@ const router = new Router<DefaultState, Context>();
 import TestController from '../controller/test';
 import AuthController from '../controller/auth';
 import TeamController from '../controller/team';
+import UserController from '../controller/user';
 
 router.prefix('/api');
 
@@ -25,6 +26,8 @@ router.post('/test', TestController.testPost);
 // team
 router.post('/team', TeamController.createTeam); // 创建团队
 router.put('/team', TeamController.updateTeamName); // 修改团队名称
+// user
+router.get('/user', UserController.getUserByUserId); // 获取用户个人信息
 
 // 注册地址 ---- end
 

@@ -70,6 +70,8 @@ const login = async () => {
         const res = await loginApi(loginForm)
         if (res?.data) {
           userStore.setToken(res.data.token)
+          userStore.setTeams(res.data.teams)
+          userStore.setUser(res.data.user)
           message.success('登录成功')
           setTimeout(() => {
             router.replace('/')

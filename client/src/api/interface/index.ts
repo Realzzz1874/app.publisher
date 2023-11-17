@@ -32,7 +32,18 @@ export namespace Auth {
 
 export namespace User {
   export interface BaseInfo {
-    username: string
-    email: string
+    user: {
+      username: string
+      email: string
+      _id: string
+    }
+  }
+  export interface MyInfo extends BaseInfo {
+    token: string
+    teams?: Array<{
+      _id: string
+      name: string
+      role: string
+    }>
   }
 }

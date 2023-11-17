@@ -8,7 +8,7 @@
         <n-icon :size="24" :component="NotificationsNoneOutlined" @click="showMessage = true" />
         <n-drawer v-model:show="showMessage" :width="502" placement="right">
           <n-drawer-content title="消息通知" closable>
-            <MessageList :userId="userInfo.id" />
+            <MessageList />
           </n-drawer-content>
         </n-drawer>
         <n-dropdown
@@ -19,15 +19,14 @@
         >
           <div class="user-block">
             <n-avatar round size="medium">
-              <!-- {{ userInfo.name }} -->
               <n-icon :size="34" :component="PersonFilled" />
             </n-avatar>
-            <span class="user-name">{{ userInfo.name }}</span>
+            <span class="user-name">{{ userInfo?.username }}</span>
           </div>
         </n-dropdown>
         <n-drawer v-model:show="showSettings" :width="502" placement="right">
           <n-drawer-content title="个人设置" closable>
-            <UserSettings :userId="userInfo.id" @close-settings="closeSettings" />
+            <UserSettings @close-settings="closeSettings" />
           </n-drawer-content>
         </n-drawer>
       </div>
@@ -36,27 +35,28 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { NDropdown, NIcon, NAvatar, NDrawer, NDrawerContent, NGradientText } from 'naive-ui'
 import { NotificationsNoneOutlined, PersonFilled } from '@vicons/material'
 
+import { UserStore } from '@/store/module/user'
+
 import MessageList from './MessageList.vue'
 import UserSettings from './UserSettings.vue'
 
 const router = useRouter()
+const userStore = UserStore()
 
-function goMain() {
-  router.push('/apps')
+const goMain = () => {
+  router.push('/')
 }
 
-// 个人信息
-const userInfo = reactive({
-  name: '张三',
-  id: 'as'
+const userInfo = computed(() => {
+  return userStore.userInfo
 })
-const userOptions = reactive([
+const userOptions = [
   {
     label: '个人设置',
     key: 'settings'
@@ -65,17 +65,20 @@ const userOptions = reactive([
     label: '退出登录',
     key: 'logout'
   }
-])
-function selectUserOption(key: string) {
-  console.log('key', key)
+]
+const selectUserOption = (key: string) => {
   if (key == 'settings') {
-    showSettings.value = true
+    return (showSettings.value = true)
+  }
+  if (key == 'logout') {
+    userStore.logout()
+    router.replace('/auth')
   }
 }
 // 消息
 const showMessage = ref(false)
 const showSettings = ref(false)
-function closeSettings() {
+const closeSettings = () => {
   showSettings.value = false
 }
 </script>

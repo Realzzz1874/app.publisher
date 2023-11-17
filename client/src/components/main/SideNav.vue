@@ -8,7 +8,13 @@
     />
     <n-modal v-model:show="showAddTeam" preset="dialog" title="创建团队" :show-icon="false">
       <div class="modal-wrapper">
-        <n-input v-model:value="teamName" type="text" placeholder="请输入团队名称" />
+        <n-input
+          v-model:value="teamName"
+          type="text"
+          placeholder="请输入团队名称"
+          maxlength="10"
+          show-count
+        />
       </div>
       <template #action>
         <n-space>
@@ -21,59 +27,82 @@
 </template>
 
 <script lang="ts" setup>
-import { type Component, h, ref, onMounted } from 'vue'
+import { type Component, h, ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { type MenuOption, NIcon, NMenu, NModal, NButton, NSpace, NInput } from 'naive-ui'
 import { GroupAddSharp, GroupFilled } from '@vicons/material'
 
+import { TeamStore } from '@/store/module/team'
+import { UserStore } from '@/store/module/user'
+import { createTeamApi } from '@/api/module/team'
+
+const teamStore = TeamStore()
+const userStore = UserStore()
+
 const router = useRouter()
+
+const myTeams = computed(() => {
+  return userStore.teams?.map((t) => {
+    return {
+      label: t.name,
+      key: t._id
+    }
+  })
+})
+
+const menuOptions = computed<MenuOption[]>(() => {
+  return [
+    {
+      label: '创建团队',
+      key: 'addTeam',
+      icon: renderIcon(GroupAddSharp)
+    },
+    {
+      label: '团队管理',
+      key: 'teams',
+      icon: renderIcon(GroupFilled),
+      children: myTeams.value
+    }
+  ]
+})
+
+onMounted(() => {
+  let myTeamsId: string[] = myTeams?.value ? myTeams.value.map((t) => t.key) : []
+  selectedMenuKey.value = teamStore.selectedTeamId
+  if (selectedMenuKey.value && myTeamsId.includes(selectedMenuKey.value)) {
+    router.push(`/team/${selectedMenuKey.value}`)
+  }
+})
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) })
 }
 
-onMounted(() => {
-  // 从缓存里取上次默认选中
-  selectedMenuKey.value = '6128b3b2e7abe6001ede5b95'
-  if (selectedMenuKey.value) {
-    router.push(`/team/${selectedMenuKey.value}`)
-  }
-})
-
 const selectedMenuKey = ref('')
-const menuOptions: MenuOption[] = [
-  {
-    label: '创建团队',
-    key: 'addTeam',
-    icon: renderIcon(GroupAddSharp)
-  },
-  {
-    label: '团队管理',
-    key: 'teams',
-    icon: renderIcon(GroupFilled),
-    children: [
-      {
-        label: 'pass-dev',
-        key: '6128b3b2e7abe6001ede5b95'
-      }
-    ]
-  }
-]
 
 const showAddTeam = ref(false)
 const teamName = ref('')
-function addTeam() {
-  // 1. 提交新增接口
-  // 2. 提交成功后跳转到该团队页面
-  teamName.value = ''
-  showAddTeam.value = false
+const addTeam = async () => {
+  if (!teamName.value) return
+  const res = await createTeamApi({ name: teamName.value })
+  if (res.data) {
+    // 重新获取左侧团队列表
+    await userStore.getMyInfo()
+    selectedMenuKey.value = res.data
+    teamStore.setSelectedTeamId(res.data)
+    teamName.value = ''
+    showAddTeam.value = false
+    router.push(`/team/${res.data}`)
+  }
 }
-function changeMenu(key: string) {
+const changeMenu = (key: string) => {
   if (key == 'addTeam') {
     // 创建团队
     showAddTeam.value = true
   } else {
+    selectedMenuKey.value = key
+    teamStore.setSelectedTeamId(key)
     router.push(`/team/${key}`)
   }
 }

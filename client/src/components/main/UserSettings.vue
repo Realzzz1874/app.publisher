@@ -64,9 +64,6 @@
 import { NTabs, NTabPane, NInput, NSpace, NButton } from 'naive-ui'
 import { reactive } from 'vue'
 const emit = defineEmits(['close-settings'])
-defineProps<{
-  userId: string
-}>()
 
 const userInfo = reactive({
   name: '',

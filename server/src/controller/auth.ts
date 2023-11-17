@@ -17,17 +17,20 @@ export default class AuthController {
       ctx.error(error.message, ResponseStatus.INVALID_PARAMS);
     } else {
       const { username, password } = value;
-      const user = await UserService.getUser(username as string);
+      const user = await UserService.getUserByUsername(username as string);
       if (user) {
         const val = await bcrypt.compare(password as string, user.password);
         if (val) {
           const t = sign(user._id);
-          const u: IUser.BaseUser = {
-            username: user.username,
-            email: user.email,
-            _id: user._id,
+          const u: IUser.MyInfo = {
+            user: {
+              username: user.username,
+              email: user.email,
+              _id: user._id,
+            },
+            teams: user.teams,
           };
-          ctx.success({ token: t, user: u });
+          ctx.success({ token: t, ...u });
         } else {
           ctx.error('用户名或密码不正确', ResponseStatus.BAD_REQUEST);
         }
@@ -47,7 +50,7 @@ export default class AuthController {
       ctx.error(error.message, ResponseStatus.INVALID_PARAMS);
     } else {
       const { username, password, email } = value;
-      const user = await UserService.getUser(username as string);
+      const user = await UserService.getUserByUsername(username as string);
       if (!user) {
         const bcryptPassword = await bcrypt.hash(password, 10);
         const user = await UserService.registerUser(
@@ -57,11 +60,13 @@ export default class AuthController {
         );
         const t = sign(user._id);
         const u: IUser.BaseUser = {
-          username: user.username,
-          email: user.email,
-          _id: user._id,
+          user: {
+            username: user.username,
+            email: user.email,
+            _id: user._id,
+          },
         };
-        ctx.success({ token: t, user: u });
+        ctx.success({ token: t, ...u });
       } else {
         ctx.error('用户已存在', ResponseStatus.BAD_REQUEST);
       }
