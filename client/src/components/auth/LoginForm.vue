@@ -13,6 +13,7 @@
           show-password-on="click"
           placeholder="请输入密码"
           :maxlength="8"
+          @keydown.enter="login"
         >
           <template #password-visible-icon>
             <n-icon :size="16" :component="GlassesOutline" />

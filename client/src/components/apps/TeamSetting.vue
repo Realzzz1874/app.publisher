@@ -7,7 +7,10 @@
           <div class="name-input">
             <n-input v-model:value="teamName" type="text" placeholder="请输入团队名称" />
           </div>
-          <n-button strong secondary type="primary" @click="saveName"> 保存 </n-button>
+          <n-space>
+            <n-button strong secondary type="primary" @click="saveName"> 保存 </n-button>
+            <n-button strong secondary type="tertiary" @click="editable = false"> 取消 </n-button>
+          </n-space>
         </template>
 
         <div class="team-name" v-else>
@@ -49,34 +52,55 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { NInput, NButton, NIcon, NSpace, NTag } from 'naive-ui'
 import { EditNoteFilled } from '@vicons/material'
+import { getTeamByIdApi, updateTeamNameApi } from '@/api/module/team'
+import { UserStore } from '@/store/module/user'
 
-defineProps<{
+import { type Team } from '@/api/interface'
+
+const userStore = UserStore()
+
+const props = defineProps<{
   teamId: string
 }>()
+const teamName = ref('')
+const creatorId = ref('')
+const members = ref<Team.Member[]>([])
 
-const teamName = ref('开发环境')
-const creatorId = ref('6128b3b2e7abe6001ede5b95')
-const editable = ref(false)
-function saveName() {
-  editable.value = false
-}
-const members = reactive([
-  {
-    _id: '6128b3b2e7abe6001ede5b95',
-    email: 'zhang@gamil.com',
-    role: '',
-    username: 'zhang_san'
-  },
-  {
-    _id: '1',
-    email: 'zhang@gamil.com',
-    role: '',
-    username: 'zhang_san'
+onMounted(async () => {
+  await getTeam()
+})
+
+watch(
+  () => props.teamId,
+  async () => {
+    await getTeam()
   }
-])
+)
+
+const getTeam = async () => {
+  const res = await getTeamByIdApi(props.teamId)
+  if (res.data) {
+    const d = res.data
+    teamName.value = d.name
+    creatorId.value = d.creatorId
+    members.value = d.members
+  }
+}
+
+const editable = ref(false)
+const saveName = async () => {
+  if (teamName.value) {
+    const res = await updateTeamNameApi({ teamId: props.teamId, name: teamName.value })
+    if (res.data) {
+      editable.value = false
+      // 重新获取左侧团队列表
+      await userStore.getMyInfo()
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

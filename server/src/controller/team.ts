@@ -30,4 +30,15 @@ export default class TeamController {
       team ? ctx.success(team._id) : ctx.error('SYSTEM ERROR');
     }
   }
+
+  // 获取团队详情
+  static async getTeamById(ctx: Context) {
+    const { teamId } = ctx.params;
+    if (!teamId) {
+      ctx.error('', ResponseStatus.INVALID_PARAMS);
+    } else {
+      const team = await TeamService.getTeamById(teamId);
+      team ? ctx.success(team) : ctx.error('', ResponseStatus.BAD_REQUEST);
+    }
+  }
 }

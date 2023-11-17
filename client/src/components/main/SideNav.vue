@@ -1,11 +1,14 @@
 <template>
   <div class="slide-nav">
-    <n-menu
-      :default-expanded-keys="['teams']"
-      :options="menuOptions"
-      v-model:value="selectedMenuKey"
-      @update:value="changeMenu"
-    />
+    <n-scrollbar style="max-height: 100%">
+      <n-menu
+        :default-expanded-keys="['teams']"
+        :options="menuOptions"
+        v-model:value="selectedMenuKey"
+        @update:value="changeMenu"
+      />
+    </n-scrollbar>
+
     <n-modal v-model:show="showAddTeam" preset="dialog" title="创建团队" :show-icon="false">
       <div class="modal-wrapper">
         <n-input
@@ -30,7 +33,16 @@
 import { type Component, h, ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { type MenuOption, NIcon, NMenu, NModal, NButton, NSpace, NInput } from 'naive-ui'
+import {
+  type MenuOption,
+  NIcon,
+  NMenu,
+  NModal,
+  NButton,
+  NSpace,
+  NInput,
+  NScrollbar
+} from 'naive-ui'
 import { GroupAddSharp, GroupFilled } from '@vicons/material'
 
 import { TeamStore } from '@/store/module/team'
@@ -121,6 +133,7 @@ const changeMenu = (key: string) => {
   border-right: 1px solid $color_divider;
   .n-menu {
     width: 100%;
+    padding-bottom: 40px;
   }
 }
 </style>

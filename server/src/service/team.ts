@@ -73,4 +73,9 @@ export default class TeamService {
       session.endSession();
     }
   }
+
+  //  根据 teamId 获取团队详情
+  static async getTeamById(id: string) {
+    return await TeamModel.findById(id);
+  }
 }

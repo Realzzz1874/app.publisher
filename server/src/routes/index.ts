@@ -25,7 +25,8 @@ router.post('/test', TestController.testPost);
 
 // team
 router.post('/team', TeamController.createTeam); // 创建团队
-router.put('/team', TeamController.updateTeamName); // 修改团队名称
+router.put('/team/name', TeamController.updateTeamName); // 修改团队名称
+router.get('/team/:teamId', TeamController.getTeamById); // 获取团队详情
 // user
 router.get('/user', UserController.getUserByUserId); // 获取用户个人信息
 

@@ -11,7 +11,7 @@ import { createDiscreteApi } from 'naive-ui'
 import { useRouter } from 'vue-router'
 
 import { UserStore } from '@/store/module/user'
-import { type HttpResultData, type ErrorResponse } from './interface'
+import { type HttpResultData, type ErrorResponse } from '../interface'
 
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   loading?: boolean

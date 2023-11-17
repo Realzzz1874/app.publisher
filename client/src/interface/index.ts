@@ -47,3 +47,24 @@ export namespace User {
     }>
   }
 }
+
+export namespace Team {
+  export interface Member {
+    _id: string
+    username: string
+    email: string
+    role: string
+  }
+  export interface TeamDetail {
+    _id: string
+    name: string
+    creatorId: string
+    createAt: string
+    members: Array<Member>
+  }
+
+  export interface UpdateTeamNameDTO {
+    teamId: string
+    name: string
+  }
+}

@@ -1,6 +1,6 @@
 import axios from '../index'
 
-import { type Auth, type User } from '../interface'
+import { type Auth, type User } from '@/interface'
 
 // 登录
 export const loginApi = (params: Auth.LoginDTO) => {
