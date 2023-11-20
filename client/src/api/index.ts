@@ -69,6 +69,9 @@ class Request {
             case 400:
               message.error(data.message || '请求失败, 请稍后重试')
               break
+            case 422:
+              message.error('请求参数格式有误')
+              break
             default:
               message.error('请求失败, 请稍后重试')
               break

@@ -9,12 +9,12 @@
           </div>
           <div class="user-info-item">
             <span>用户名:</span>
-            <n-input type="text" v-model:value="userInfo.name" placeholder="请输入用户名" />
+            <n-input type="text" v-model:value="userInfo.username" placeholder="请输入用户名" />
           </div>
         </div>
         <div class="btn-group">
           <n-space size="medium"
-            ><n-button type="success"> 确 认 </n-button>
+            ><n-button type="success" @click="updateUsername"> 确 认 </n-button>
             <n-button @click="closeSettings"> 取 消 </n-button></n-space
           >
         </div>
@@ -28,6 +28,7 @@
               show-password-on="click"
               placeholder="请输入当前密码"
               :maxlength="8"
+              v-model:value="oldPassword"
             />
           </div>
           <div class="password-item">
@@ -37,6 +38,7 @@
               show-password-on="click"
               placeholder="请输入新密码"
               :maxlength="8"
+              v-model:value="newPassword"
             />
           </div>
           <div class="password-item">
@@ -46,12 +48,13 @@
               show-password-on="click"
               placeholder="请再次输入新密码"
               :maxlength="8"
+              v-model:value="confirmPassword"
             />
           </div>
         </div>
         <div class="btn-group">
           <n-space size="medium"
-            ><n-button type="success"> 确 认 </n-button>
+            ><n-button type="success" @click="changePassword"> 确 认 </n-button>
             <n-button @click="closeSettings"> 取 消 </n-button></n-space
           >
         </div>
@@ -61,16 +64,58 @@
 </template>
 
 <script lang="ts" setup>
-import { NTabs, NTabPane, NInput, NSpace, NButton } from 'naive-ui'
-import { reactive } from 'vue'
+import { NTabs, NTabPane, NInput, NSpace, NButton, useMessage } from 'naive-ui'
+import { UserStore } from '@/store/module/user'
+import { ref } from 'vue'
+import { changePasswordApi, changeUsernameApi } from '@/api/module/user'
+import { validateUsernameInput } from '@/utils/validate'
 const emit = defineEmits(['close-settings'])
+const userStore = UserStore()
+const message = useMessage()
+const userInfo = userStore.userInfo ?? {
+  username: '',
+  email: '',
+  _id: ''
+}
 
-const userInfo = reactive({
-  name: '',
-  email: 'zhang@test.com'
-})
+const updateUsername = async () => {
+  if (!validateUsernameInput(userInfo.username)) {
+    return message.error('用户名应为 1-10 位的数字和字母组成')
+  }
+  const res = await changeUsernameApi(userInfo.username)
+  if (res.data) {
+    message.success('修改成功')
+    // 更新 userStore
+    await userStore.setUser(userInfo)
+    closeSettings()
+  } else {
+    message.error('修改失败')
+  }
+}
 
-function closeSettings() {
+const oldPassword = ref('')
+const newPassword = ref('')
+const confirmPassword = ref('')
+const changePassword = async () => {
+  if (!oldPassword.value || !newPassword.value || !confirmPassword.value) {
+    return message.error('请输入完整内容')
+  }
+  if (newPassword.value !== confirmPassword.value) {
+    return message.error('两次密码不一致')
+  }
+  const res = await changePasswordApi({
+    oldPassword: oldPassword.value,
+    newPassword: newPassword.value
+  })
+  if (res.data) {
+    message.success('修改成功')
+    closeSettings()
+  } else {
+    message.error('修改失败')
+  }
+}
+
+const closeSettings = () => {
   emit('close-settings')
 }
 </script>

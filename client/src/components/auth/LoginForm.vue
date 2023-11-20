@@ -32,11 +32,22 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { type FormInst, NForm, NFormItem, NInput, NIcon, NButton, useMessage } from 'naive-ui'
+import {
+  type FormInst,
+  NForm,
+  NFormItem,
+  NInput,
+  NIcon,
+  NButton,
+  useMessage,
+  type FormItemRule,
+  type FormRules
+} from 'naive-ui'
 import { PersonCircle, GlassesOutline, Glasses } from '@vicons/ionicons5'
 
 import { loginApi } from '../../api/module/auth'
 import { UserStore } from '@/store/module/user'
+import { validateUsernameInput } from '@/utils/validate'
 
 const userStore = UserStore()
 const router = useRouter()
@@ -49,11 +60,16 @@ const loginForm = reactive({
   password: ''
 })
 
-const rules = {
+const rules: FormRules = {
   username: {
     required: true,
-    message: '请输入用户名',
-    trigger: 'blur'
+    // message: '请输入用户名',
+    trigger: 'blur',
+    validator(rule: FormItemRule, value: string) {
+      if (!value) return new Error('请输入用户名')
+      if (!validateUsernameInput(value)) return new Error('用户名格式不正确')
+      return true
+    }
   },
   password: {
     required: true,

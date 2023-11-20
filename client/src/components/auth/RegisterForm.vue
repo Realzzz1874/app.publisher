@@ -36,10 +36,21 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 
-import { type FormInst, NForm, NFormItem, NInput, NIcon, NButton, useMessage } from 'naive-ui'
+import {
+  type FormInst,
+  type FormRules,
+  NForm,
+  NFormItem,
+  NInput,
+  NIcon,
+  NButton,
+  useMessage,
+  type FormItemRule
+} from 'naive-ui'
 import { PersonCircle, GlassesOutline, Glasses, Mail } from '@vicons/ionicons5'
+import { validateUsernameInput } from '@/utils/validate'
 
-import { registerApi } from '../../api/module/auth'
+import { registerApi } from '@/api/module/auth'
 import { UserStore } from '@/store/module/user'
 import { useRouter } from 'vue-router'
 
@@ -53,11 +64,15 @@ const registerForm = reactive({
   password: ''
 })
 const registerFormRef = ref<FormInst | null>()
-const rules = {
+const rules: FormRules = {
   username: {
     required: true,
-    message: '请输入用户名',
-    trigger: 'blur'
+    trigger: 'blur',
+    validator(rule: FormItemRule, value: string) {
+      if (!value) return new Error('请输入用户名')
+      if (!validateUsernameInput(value)) return new Error('用户名格式不正确')
+      return true
+    }
   },
   email: {
     required: true,

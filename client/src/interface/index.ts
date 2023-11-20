@@ -46,6 +46,10 @@ export namespace User {
       role: string
     }>
   }
+  export interface ChangePasswordDTO {
+    oldPassword: string
+    newPassword: string
+  }
 }
 
 export namespace Team {

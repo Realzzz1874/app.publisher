@@ -12,3 +12,9 @@ export const registerSchema = Joi.object({
   password: Joi.string().pattern(/^[\S]{6,12}$/),
   email: Joi.string().email().required(),
 });
+
+// 修改密码
+export const changePasswordSchema = Joi.object({
+  oldPassword: Joi.string().pattern(/^[\S]{6,12}$/),
+  newPassword: Joi.string().pattern(/^[\S]{6,12}$/),
+});

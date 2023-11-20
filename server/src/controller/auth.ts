@@ -42,7 +42,7 @@ export default class AuthController {
 
   static async register(ctx: Context) {
     if (!Number(config.ALLOW_REGISTER)) {
-      return ctx.error('禁止注册', ResponseStatus.INVALID_PARAMS);
+      return ctx.error('禁止注册', ResponseStatus.BAD_REQUEST);
     }
     const body = ctx.request?.body;
     const { value, error } = registerSchema.validate(body);
