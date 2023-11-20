@@ -41,4 +41,16 @@ export default class TeamController {
       team ? ctx.success(team) : ctx.error('', ResponseStatus.BAD_REQUEST);
     }
   }
+
+  // 解散团队
+  static async dissolveTeam(ctx: Context) {
+    const { teamId } = ctx.params;
+    if (!teamId) {
+      ctx.error('', ResponseStatus.INVALID_PARAMS);
+    } else {
+      const userId = ctx.userId;
+      const f = await TeamService.dissolveTeam(userId, teamId);
+      f ? ctx.success(f) : ctx.error('', ResponseStatus.BAD_REQUEST);
+    }
+  }
 }

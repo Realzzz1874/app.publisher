@@ -15,3 +15,8 @@ export const getTeamByIdApi = (teamId: string) => {
 export const updateTeamNameApi = (params: Team.UpdateTeamNameDTO) => {
   return axios.put<string>('/team/name', params)
 }
+
+// 解散团队
+export const dissolveTeamApi = (teamId: string) => {
+  return axios.delete<boolean>(`/team/${teamId}`)
+}

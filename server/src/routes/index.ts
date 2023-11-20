@@ -14,8 +14,8 @@ router.prefix('/api');
 // 注册地址 ---- start
 
 // 不需要 token
-// auth
 router.get('/test', TestController.testGet);
+// auth
 router.post('/login', AuthController.login); // 登录
 router.post('/register', AuthController.register); // 注册
 
@@ -27,6 +27,7 @@ router.post('/test', TestController.testPost);
 router.post('/team', TeamController.createTeam); // 创建团队
 router.put('/team/name', TeamController.updateTeamName); // 修改团队名称
 router.get('/team/:teamId', TeamController.getTeamById); // 获取团队详情
+router.delete('/team/:teamId', TeamController.dissolveTeam); // 解散团队
 // user
 router.get('/user', UserController.getUserByUserId); // 获取用户个人信息
 

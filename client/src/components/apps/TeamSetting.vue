@@ -25,7 +25,7 @@
       <div class="right">
         <n-space size="small"
           ><n-button type="success"> 邀请成员 </n-button>
-          <n-button type="error"> 解散团队 </n-button></n-space
+          <n-button type="error" @click="dissolveTeamClick"> 解散团队 </n-button></n-space
         >
       </div>
     </div>
@@ -53,14 +53,20 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
-import { NInput, NButton, NIcon, NSpace, NTag } from 'naive-ui'
+import { NInput, NButton, NIcon, NSpace, NTag, useMessage, useDialog } from 'naive-ui'
 import { EditNoteFilled } from '@vicons/material'
-import { getTeamByIdApi, updateTeamNameApi } from '@/api/module/team'
+import { getTeamByIdApi, updateTeamNameApi, dissolveTeamApi } from '@/api/module/team'
 import { UserStore } from '@/store/module/user'
+import { TeamStore } from '@/store/module/team'
 
-import { type Team } from '@/api/interface'
+import { type Team } from '@/interface'
+import { useRouter } from 'vue-router'
+const message = useMessage()
+const dialog = useDialog()
+const router = useRouter()
 
 const userStore = UserStore()
+const teamStore = TeamStore()
 
 const props = defineProps<{
   teamId: string
@@ -100,6 +106,26 @@ const saveName = async () => {
       await userStore.getMyInfo()
     }
   }
+}
+
+// 解散团队
+const dissolveTeamClick = async () => {
+  dialog.warning({
+    title: '警告',
+    content: '确定解散该团队吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      const res = await dissolveTeamApi(props.teamId)
+      if (res.data) {
+        message.success('已解散')
+        teamStore.setSelectedTeamId('')
+        // 重新获取左侧团队列表
+        await userStore.getMyInfo()
+        router.push('/team')
+      }
+    }
+  })
 }
 </script>
 
