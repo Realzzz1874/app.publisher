@@ -14,6 +14,7 @@ const jwtMiddleware = async (ctx: Context, next: Koa.Next) => {
     return ctx.error('', ResponseStatus.UN_AUTH);
   }
   const decoded = verify(token) as User;
+
   ctx.userId = decoded.userId;
   await next();
 };

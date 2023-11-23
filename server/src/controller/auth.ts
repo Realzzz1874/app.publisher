@@ -68,7 +68,7 @@ export default class AuthController {
         };
         ctx.success({ token: t, ...u });
       } else {
-        ctx.error('用户已存在', ResponseStatus.BAD_REQUEST);
+        ctx.error(`${username} 已被使用`, ResponseStatus.BAD_REQUEST);
       }
     }
   }

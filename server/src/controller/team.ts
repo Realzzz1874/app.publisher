@@ -1,6 +1,11 @@
 import { Context } from '@/core/koa';
 
-import { createTeamSchema, UpdateNameSchema } from './team.schema';
+import {
+  createTeamSchema,
+  UpdateNameSchema,
+  UserRoleSchema,
+  AddUserSchema,
+} from './team.schema';
 import { ResponseStatus } from '../types';
 import TeamService from '../service/team';
 
@@ -51,6 +56,56 @@ export default class TeamController {
       const userId = ctx.userId;
       const f = await TeamService.dissolveTeam(userId, teamId);
       f ? ctx.success(f) : ctx.error('', ResponseStatus.BAD_REQUEST);
+    }
+  }
+
+  // 移除成员
+  static async removeUser(ctx: Context) {
+    const { teamId, removeUserId } = ctx.params;
+    if (!teamId || !removeUserId) {
+      ctx.error('', ResponseStatus.INVALID_PARAMS);
+    } else {
+      const userId = ctx.userId;
+      const f = await TeamService.removeMember(userId, teamId, removeUserId);
+      f ? ctx.success(f) : ctx.error('移除失败', ResponseStatus.BAD_REQUEST);
+    }
+  }
+
+  // 修改成员角色
+  static async changeRole(ctx: Context) {
+    const { teamId, roleId } = ctx.params;
+    if (!teamId || !roleId) {
+      ctx.error('', ResponseStatus.INVALID_PARAMS);
+    } else {
+      const body = ctx.request.body;
+      const { value, error } = UserRoleSchema.validate(body);
+      if (error) {
+        ctx.error('角色不合规', ResponseStatus.INVALID_PARAMS);
+      } else {
+        const { role } = value;
+        const userId = ctx.userId;
+        const f = await TeamService.changeRole(userId, teamId, roleId, role);
+        f ? ctx.success(f) : ctx.error('修改失败', ResponseStatus.BAD_REQUEST);
+      }
+    }
+  }
+
+  // 将某用户加入团队
+  static async addMember(ctx: Context) {
+    const { teamId } = ctx.params;
+    if (!teamId) {
+      ctx.error('', ResponseStatus.INVALID_PARAMS);
+    } else {
+      const body = ctx.request.body;
+      const { value, error } = AddUserSchema.validate(body);
+      if (error) {
+        ctx.error('', ResponseStatus.INVALID_PARAMS);
+      } else {
+        const { role, memberId } = value;
+        const userId = ctx.userId;
+        const f = await TeamService.addMember(userId, teamId, memberId, role);
+        f ? ctx.success(f) : ctx.error('添加失败', ResponseStatus.BAD_REQUEST);
+      }
     }
   }
 }
