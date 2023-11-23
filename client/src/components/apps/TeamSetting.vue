@@ -35,8 +35,8 @@
       <div class="members-list">
         <div class="member-item" v-for="(item, index) in members" :key="index">
           <div class="tag">
-            <n-tag :bordered="false" size="small" type="success" v-if="item._id == creatorId">
-              创建者
+            <n-tag :bordered="false" size="small" type="success" v-if="getItemRole(item)">
+              {{ getItemRole(item) }}
             </n-tag>
           </div>
           <n-space>
@@ -58,6 +58,7 @@ import { EditNoteFilled } from '@vicons/material'
 import { getTeamByIdApi, updateTeamNameApi, dissolveTeamApi } from '@/api/module/team'
 import { UserStore } from '@/store/module/user'
 import { TeamStore } from '@/store/module/team'
+import { ROLES } from '@/enum'
 
 import { type Team } from '@/interface'
 import { useRouter } from 'vue-router'
@@ -126,6 +127,11 @@ const dissolveTeamClick = async () => {
       }
     }
   })
+}
+
+// 用户权限
+const getItemRole = (item: Team.Member) => {
+  return item.role === ROLES.owner ? '创建者' : item.role === ROLES.manager ? '管理员' : ''
 }
 </script>
 
