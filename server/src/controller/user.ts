@@ -59,4 +59,26 @@ export default class UserController {
       }
     }
   }
+
+  // 模糊查询用户 [username | email]
+  static async findUsers(ctx: Context) {
+    const query = ctx.request.query;
+    if (query.keyword) {
+      const users = await UserService.findUser(query.keyword as string);
+      if (users.length) {
+        const arr = users.map((u) => {
+          return {
+            _id: u._id,
+            username: u.username,
+            email: u.email,
+          };
+        });
+        ctx.success(arr);
+      } else {
+        ctx.success([]);
+      }
+    } else {
+      ctx.error('', ResponseStatus.INVALID_PARAMS);
+    }
+  }
 }

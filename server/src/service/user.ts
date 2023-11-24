@@ -13,7 +13,7 @@ export default class UserService {
   }
   // 获取用户详情 [可从详情中获取基本信息和团队列表]
   static async getUserByUserId(userId: string) {
-    return await UserModel.findById(userId);
+    return await UserModel.findById(userId).select('-password').exec();
   }
 
   // 修改密码
@@ -51,5 +51,17 @@ export default class UserService {
     } else {
       throw new HttpError(ResponseStatus.BAD_REQUEST, '用户不存在');
     }
+  }
+
+  // 查询用户 [username | email]
+  static async findUser(keyword: string) {
+    return await UserModel.find({
+      $or: [
+        {
+          username: { $regex: keyword, $options: 'i' },
+        },
+        { email: { $regex: keyword, $options: 'i' } },
+      ],
+    });
   }
 }

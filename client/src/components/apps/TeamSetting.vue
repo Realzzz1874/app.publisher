@@ -24,7 +24,7 @@
       </div>
       <div class="right">
         <n-space size="small"
-          ><n-button type="success"> 邀请成员 </n-button>
+          ><n-button type="success" @click="showInviteDialog = true"> 邀请成员 </n-button>
           <!-- 只有 creator 才可以解散 -->
           <n-button
             type="error"
@@ -87,11 +87,39 @@
       </div>
     </div>
   </div>
+
+  <n-modal v-model:show="showInviteDialog" preset="dialog" title="邀请成员" :show-icon="false">
+    <div class="modal-wrapper">
+      <n-input
+        type="text"
+        placeholder="请输入用户名称或邮箱"
+        maxlength="10"
+        @update:value="changeInviteKeyword"
+      />
+    </div>
+    <template #action>
+      <n-space>
+        <n-button type="default" @click="showInviteDialog = false"> 取消 </n-button
+        ><n-button type="success"> 确定 </n-button>
+      </n-space>
+    </template>
+  </n-modal>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { NInput, NButton, NIcon, NSpace, NTag, useMessage, useDialog, NPopselect } from 'naive-ui'
+import { debounce } from 'lodash'
+import {
+  NInput,
+  NButton,
+  NIcon,
+  NSpace,
+  NTag,
+  useMessage,
+  useDialog,
+  NPopselect,
+  NModal
+} from 'naive-ui'
 import { EditNoteFilled, EditNoteRound, DeleteSweepFilled } from '@vicons/material'
 import {
   getTeamByIdApi,
@@ -100,6 +128,7 @@ import {
   removeMemberApi,
   changeRoleApi
 } from '@/api/module/team'
+import { findUsersApi } from '@/api/module/user'
 import { UserStore } from '@/store/module/user'
 import { TeamStore } from '@/store/module/team'
 import { ROLES } from '@/enum'
@@ -234,6 +263,18 @@ const removeMember = async (item: Team.Member) => {
 const getItemRole = (item: Team.Member) => {
   return item.role === ROLES.owner ? '创建者' : item.role === ROLES.manager ? '管理员' : ''
 }
+
+// 邀请用户
+const showInviteDialog = ref(false)
+
+const changeInviteKeyword = debounce(async (val: string) => {
+  if (val) {
+    const res = await findUsersApi(val)
+    if (res.data) {
+      console.log('res', res.data)
+    }
+  }
+}, 500)
 </script>
 
 <style scoped lang="scss">
@@ -311,5 +352,10 @@ const getItemRole = (item: Team.Member) => {
       }
     }
   }
+}
+
+.modal-wrapper {
+  // width: 330px;
+  margin: 30px 0;
 }
 </style>

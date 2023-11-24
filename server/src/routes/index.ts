@@ -35,6 +35,7 @@ router.post('/team/:teamId', TeamController.addMember); // 将某用户加入团
 router.get('/user', UserController.getUserByUserId); // 获取用户个人信息
 router.put('/user/password', UserController.changePassword); // 修改密码
 router.put('/user/username', UserController.updateUsername); // 修改用户名称
+router.get('/users', UserController.findUsers); // 模糊查询用户 [username | email]
 
 // 注册地址 ---- end
 
