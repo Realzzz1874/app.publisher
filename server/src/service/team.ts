@@ -3,6 +3,7 @@ import UserModel from '../model/user';
 import mongoose from '../database/mongodb';
 import HttpError from '../interface/HttpError';
 import { ResponseStatus } from '../types';
+import { ROLES } from '../enum';
 
 export default class TeamService {
   // 获取 user 在 team 中的角色
@@ -33,10 +34,10 @@ export default class TeamService {
           _id: creatorId,
           username: user.username,
           email: user.email,
-          role: 'owner',
+          role: ROLES.owner,
         },
       ];
-      user.teams?.push({ _id: team._id, name, role: 'owner' });
+      user.teams?.push({ _id: team._id, name, role: ROLES.owner });
       await user.save();
       await team.save();
       await session.commitTransaction();
@@ -55,7 +56,7 @@ export default class TeamService {
         members: {
           $elemMatch: {
             _id: userId,
-            $or: [{ role: 'owner' }, { role: 'manager' }],
+            $or: [{ role: ROLES.owner }, { role: ROLES.manager }],
           },
         },
       },
@@ -96,7 +97,7 @@ export default class TeamService {
     // 只有 owner 才可以解散
     const res = await this.getUserTeamRole(userId, teamId);
 
-    if (res.role != 'owner') {
+    if (res.role != ROLES.owner) {
       throw new HttpError(ResponseStatus.BAD_REQUEST, '无权操作此团队');
     } else {
       const team = res.team!;
@@ -134,9 +135,9 @@ export default class TeamService {
   ) {
     // 只有 owner | manager 才可以移除成员
     const user = await this.getUserTeamRole(userId, teamId);
-    if (user.role == 'owner' || user.role == 'manager') {
+    if (user.role == ROLES.owner || user.role == ROLES.manager) {
       const removeUser = await this.getUserTeamRole(removeUserId, teamId);
-      if (removeUser.role == 'owner') {
+      if (removeUser.role == ROLES.owner) {
         // 不能把 owner 移除了
         throw new HttpError(ResponseStatus.BAD_REQUEST, '无权操作');
       }
@@ -187,7 +188,7 @@ export default class TeamService {
     role: string
   ) {
     const user = await this.getUserTeamRole(userId, teamId);
-    if (user.role == 'owner' || user.role == 'manager') {
+    if (user.role == ROLES.owner || user.role == ROLES.manager) {
       let team = await TeamModel.findById(teamId);
       if (!team) {
         throw new HttpError(ResponseStatus.BAD_REQUEST, '团队不存在');
@@ -245,9 +246,9 @@ export default class TeamService {
     }
     const user = await this.getUserTeamRole(userId, teamId);
     const roleUser = await this.getUserTeamRole(roleId, teamId);
-    if (user.role == 'owner' || user.role == 'manager') {
-      if (roleUser.role == 'manager' || roleUser.role == 'guest') {
-        if (role == 'manager' || role == 'guest') {
+    if (user.role == ROLES.owner || user.role == ROLES.manager) {
+      if (roleUser.role == ROLES.manager || roleUser.role == ROLES.guest) {
+        if (role == ROLES.manager || role == ROLES.guest) {
           // 事务更新
           const session = await mongoose.startSession();
           session.startTransaction();

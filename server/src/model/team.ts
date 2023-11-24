@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import mongoose, { Document, Schema } from 'mongoose';
+import { ROLES } from '../enum';
 
 interface ITeam extends Document {
   name: string;
@@ -24,7 +25,7 @@ const TeamSchema = new Schema({
       email: String,
       role: {
         type: String,
-        enum: ['owner', 'manager', 'guest'],
+        enum: [ROLES.owner, ROLES.manager, ROLES.guest],
       },
     },
   ],

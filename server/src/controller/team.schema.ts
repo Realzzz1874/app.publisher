@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+import { ROLES } from '../enum';
 
 // 创建
 export const createTeamSchema = Joi.object({
@@ -13,11 +14,11 @@ export const UpdateNameSchema = Joi.object({
 
 // 修改角色
 export const UserRoleSchema = Joi.object({
-  role: Joi.string().valid('manager', 'guest').required(),
+  role: Joi.string().valid(ROLES.manager, ROLES.guest).required(),
 });
 
 // 将某用户加入团队
 export const AddUserSchema = Joi.object({
-  role: Joi.string().valid('manager', 'guest').required(),
+  role: Joi.string().valid(ROLES.manager, ROLES.guest).required(),
   memberId: Joi.string().required(),
 });

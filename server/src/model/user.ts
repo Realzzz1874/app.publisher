@@ -1,3 +1,4 @@
+import { ROLES } from '../enum';
 import { ObjectId } from 'mongodb';
 import mongoose, { Document, Schema } from 'mongoose';
 
@@ -24,7 +25,7 @@ const UserSchema = new Schema({
       name: String,
       role: {
         type: String,
-        enum: ['owner', 'manager', 'guest'],
+        enum: [ROLES.owner, ROLES.manager, ROLES.guest],
       },
     },
   ],
