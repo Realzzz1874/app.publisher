@@ -242,7 +242,7 @@ export default class TeamService {
     role: string
   ) {
     if (userId == roleId) {
-      throw new HttpError(ResponseStatus.BAD_REQUEST, '禁止修改');
+      throw new HttpError(ResponseStatus.BAD_REQUEST, '禁止修改自己的权限');
     }
     const user = await this.getUserTeamRole(userId, teamId);
     const roleUser = await this.getUserTeamRole(roleId, teamId);

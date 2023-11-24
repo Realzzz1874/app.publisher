@@ -42,6 +42,7 @@ export default class TeamController {
     if (!teamId) {
       ctx.error('', ResponseStatus.INVALID_PARAMS);
     } else {
+      // TODO: 校验是否在团队中，否则不给查看
       const team = await TeamService.getTeamById(teamId);
       team ? ctx.success(team) : ctx.error('', ResponseStatus.BAD_REQUEST);
     }

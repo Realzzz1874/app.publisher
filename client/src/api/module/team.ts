@@ -20,3 +20,13 @@ export const updateTeamNameApi = (params: Team.UpdateTeamNameDTO) => {
 export const dissolveTeamApi = (teamId: string) => {
   return axios.delete<boolean>(`/team/${teamId}`)
 }
+
+// 移除成员
+export const removeMemberApi = (teamId: string, removeUserId: string) => {
+  return axios.delete<boolean>(`/team/${teamId}/${removeUserId}`)
+}
+
+// 修改成员角色
+export const changeRoleApi = (teamId: string, memberId: string, role: string) => {
+  return axios.put<boolean>(`/team/${teamId}/${memberId}`, { role })
+}

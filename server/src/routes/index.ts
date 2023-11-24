@@ -29,7 +29,7 @@ router.put('/team/name', TeamController.updateTeamName); // 修改团队名称
 router.get('/team/:teamId', TeamController.getTeamById); // 获取团队详情
 router.delete('/team/:teamId', TeamController.dissolveTeam); // 解散团队
 router.delete('/team/:teamId/:removeUserId', TeamController.removeUser); // 移除成员
-router.put('/team/:teamId/:roleId', TeamController.changeRole); // 修改用户角色
+router.put('/team/:teamId/:roleId', TeamController.changeRole); // 修改成员角色
 router.post('/team/:teamId', TeamController.addMember); // 将某用户加入团队
 // user
 router.get('/user', UserController.getUserByUserId); // 获取用户个人信息

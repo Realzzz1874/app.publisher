@@ -25,7 +25,14 @@
       <div class="right">
         <n-space size="small"
           ><n-button type="success"> 邀请成员 </n-button>
-          <n-button type="error" @click="dissolveTeamClick"> 解散团队 </n-button></n-space
+          <!-- 只有 creator 才可以解散 -->
+          <n-button
+            type="error"
+            @click="dissolveTeamClick"
+            v-if="creatorId == userStore.userInfo?._id"
+          >
+            解散团队
+          </n-button></n-space
         >
       </div>
     </div>
@@ -38,13 +45,44 @@
             <n-tag :bordered="false" size="small" type="success" v-if="getItemRole(item)">
               {{ getItemRole(item) }}
             </n-tag>
+            <n-tag
+              :bordered="false"
+              size="small"
+              type="info"
+              v-if="item._id == userStore.userInfo?._id"
+            >
+              自己
+            </n-tag>
           </div>
-          <n-space>
+          <div class="info">
             <p>
               {{ item.username }}
             </p>
-            <span>{{ item.email }}</span></n-space
-          >
+            <p>{{ item.email }}</p>
+            <!-- 【编辑权限 & 移除成员】操作，owner 那条不显示; 当前用户是manager或者owner才显示-->
+            <div class="opt-icons" v-if="creatorId != item._id && myRole != ROLES.guest">
+              <!-- 编辑权限 -->
+              <n-popselect
+                v-model:value="itemRole"
+                :options="roleOptions"
+                trigger="click"
+                @update:value="changeItemRole"
+              >
+                <n-button quaternary circle type="info" @click="setItem(item)">
+                  <template #icon>
+                    <n-icon :size="20" :component="EditNoteRound" color="#18a058" />
+                  </template>
+                </n-button>
+              </n-popselect>
+
+              <!-- 移除成员 -->
+              <n-button quaternary circle type="error" @click="removeMember(item)">
+                <template #icon>
+                  <n-icon :size="20" :component="DeleteSweepFilled" />
+                </template>
+              </n-button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -52,10 +90,16 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
-import { NInput, NButton, NIcon, NSpace, NTag, useMessage, useDialog } from 'naive-ui'
-import { EditNoteFilled } from '@vicons/material'
-import { getTeamByIdApi, updateTeamNameApi, dissolveTeamApi } from '@/api/module/team'
+import { computed, onMounted, ref, watch } from 'vue'
+import { NInput, NButton, NIcon, NSpace, NTag, useMessage, useDialog, NPopselect } from 'naive-ui'
+import { EditNoteFilled, EditNoteRound, DeleteSweepFilled } from '@vicons/material'
+import {
+  getTeamByIdApi,
+  updateTeamNameApi,
+  dissolveTeamApi,
+  removeMemberApi,
+  changeRoleApi
+} from '@/api/module/team'
 import { UserStore } from '@/store/module/user'
 import { TeamStore } from '@/store/module/team'
 import { ROLES } from '@/enum'
@@ -67,14 +111,32 @@ const dialog = useDialog()
 const router = useRouter()
 
 const userStore = UserStore()
+
+const myRole = computed(() => {
+  const myId = userStore.userInfo?._id
+  const me = members.value.filter((i) => i._id == myId)
+  return me[0].role
+})
+
 const teamStore = TeamStore()
 
 const props = defineProps<{
   teamId: string
 }>()
+
 const teamName = ref('')
 const creatorId = ref('')
 const members = ref<Team.Member[]>([])
+const roleOptions = [
+  {
+    label: ROLES.manager,
+    value: ROLES.manager
+  },
+  {
+    label: ROLES.guest,
+    value: ROLES.guest
+  }
+]
 
 onMounted(async () => {
   await getTeam()
@@ -124,6 +186,45 @@ const dissolveTeamClick = async () => {
         // 重新获取左侧团队列表
         await userStore.getMyInfo()
         router.push('/team')
+      }
+    }
+  })
+}
+
+// 修改用户角色
+const itemRole = ref('')
+const itemId = ref('')
+const selectMember = ref<Team.Member>()
+const setItem = (item: Team.Member) => {
+  itemRole.value = item.role
+  itemId.value = item._id
+  selectMember.value = item
+}
+const changeItemRole = async (v: string) => {
+  if (v == selectMember.value?.role) return
+  const res = await changeRoleApi(props.teamId, itemId.value, itemRole.value)
+  if (res.data) {
+    message.success('权限修改成功')
+    await getTeam()
+  }
+}
+
+// 移除成员
+const removeMember = async (item: Team.Member) => {
+  const content =
+    item._id == userStore.userInfo?._id
+      ? `确定要离开【${teamName.value}】吗？`
+      : `确定要移除【${item.username}】吗？`
+  dialog.warning({
+    title: '警告',
+    content: content,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      const res = await removeMemberApi(props.teamId, item._id)
+      if (res.data) {
+        message.success('移除成功')
+        await getTeam()
       }
     }
   })
@@ -186,15 +287,24 @@ const getItemRole = (item: Team.Member) => {
         height: 48px;
         border-bottom: 1px solid $color_divider;
         .tag {
-          width: 100px;
+          width: 140px;
+          .n-tag {
+            margin-right: 10px;
+          }
         }
-        p {
-          width: 120px;
+        .info {
+          @include flex(row, flex-start, center);
+          p {
+            width: 120px;
+          }
+          .opt-icons {
+            margin-left: 28px;
+            button {
+              margin-right: 6px;
+            }
+          }
         }
-        span {
-          color: $color_font_second;
-          width: 120px;
-        }
+
         &:last-child {
           border-bottom: none;
         }
