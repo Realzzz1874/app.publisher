@@ -18,8 +18,9 @@
           @select="selectUserOption"
         >
           <div class="user-block">
-            <n-avatar round size="medium">
-              <n-icon :size="34" :component="PersonFilled" />
+            <n-avatar round size="medium" :style="{ backgroundColor: '#36ad6a' }">
+              <!-- <n-icon :size="34" :component="PersonFilled" /> -->
+              {{ avatarName }}
             </n-avatar>
             <span class="user-name">{{ userInfo?.username }}</span>
           </div>
@@ -39,7 +40,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { NDropdown, NIcon, NAvatar, NDrawer, NDrawerContent, NGradientText } from 'naive-ui'
-import { NotificationsNoneOutlined, PersonFilled } from '@vicons/material'
+import { NotificationsNoneOutlined } from '@vicons/material'
 
 import { UserStore } from '@/store/module/user'
 
@@ -55,6 +56,9 @@ const goMain = () => {
 
 const userInfo = computed(() => {
   return userStore.userInfo
+})
+const avatarName = computed(() => {
+  return userStore.userInfo?.username.charAt(0).toLocaleUpperCase()
 })
 const userOptions = [
   {
