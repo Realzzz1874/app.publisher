@@ -90,17 +90,27 @@
 
   <n-modal v-model:show="showInviteDialog" preset="dialog" title="邀请成员" :show-icon="false">
     <div class="modal-wrapper">
-      <n-input
-        type="text"
+      <n-select
+        filterable
         placeholder="请输入用户名称或邮箱"
-        maxlength="10"
-        @update:value="changeInviteKeyword"
+        :options="inviteUsers"
+        :loading="searchInviteLoading"
+        remote
+        clearable
+        v-model:value="inviteUserId"
+        @search="changeInviteKeyword"
       />
+      <n-radio-group v-model:value="inviteRole" name="radiogroup" size="small">
+        <n-space>
+          <n-radio :value="ROLES.manager">管理员</n-radio>
+          <n-radio :value="ROLES.guest">访客</n-radio>
+        </n-space>
+      </n-radio-group>
     </div>
     <template #action>
       <n-space>
         <n-button type="default" @click="showInviteDialog = false"> 取消 </n-button
-        ><n-button type="success"> 确定 </n-button>
+        ><n-button type="success" @click="confirmInvite"> 确定 </n-button>
       </n-space>
     </template>
   </n-modal>
@@ -118,7 +128,10 @@ import {
   useMessage,
   useDialog,
   NPopselect,
-  NModal
+  NModal,
+  NSelect,
+  NRadioGroup,
+  NRadio
 } from 'naive-ui'
 import { EditNoteFilled, EditNoteRound, DeleteSweepFilled } from '@vicons/material'
 import {
@@ -126,7 +139,8 @@ import {
   updateTeamNameApi,
   dissolveTeamApi,
   removeMemberApi,
-  changeRoleApi
+  changeRoleApi,
+  inviteMemberApi
 } from '@/api/module/team'
 import { findUsersApi } from '@/api/module/user'
 import { UserStore } from '@/store/module/user'
@@ -188,6 +202,7 @@ const getTeam = async () => {
   }
 }
 
+// 修改团队名称
 const editable = ref(false)
 const saveName = async () => {
   if (teamName.value) {
@@ -251,7 +266,7 @@ const removeMember = async (item: Team.Member) => {
     negativeText: '取消',
     onPositiveClick: async () => {
       const res = await removeMemberApi(props.teamId, item._id)
-      if (res.data) {
+      if (res && res.data) {
         message.success('移除成功')
         await getTeam()
       }
@@ -266,15 +281,37 @@ const getItemRole = (item: Team.Member) => {
 
 // 邀请用户
 const showInviteDialog = ref(false)
-
+const searchInviteLoading = ref(false)
+const inviteUsers = ref<{ label: string; value: string }[]>([])
+const inviteUserId = ref(null)
+const inviteRole = ref('')
 const changeInviteKeyword = debounce(async (val: string) => {
   if (val) {
+    searchInviteLoading.value = true
     const res = await findUsersApi(val)
     if (res.data) {
-      console.log('res', res.data)
+      inviteUsers.value = res.data.map((u) => {
+        return {
+          label: `${u.username} - ${u.email}`,
+          value: u._id
+        }
+      })
     }
+    searchInviteLoading.value = false
+  } else {
+    searchInviteLoading.value = false
+    inviteUsers.value = []
   }
 }, 500)
+const confirmInvite = async () => {
+  if (!inviteUserId.value || !inviteRole.value) return message.error('请选择完整信息')
+  const res = await inviteMemberApi(props.teamId, inviteUserId.value, inviteRole.value)
+  if (res && res.data) {
+    message.success('邀请加入成功')
+    await getTeam()
+    showInviteDialog.value = false
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -357,5 +394,10 @@ const changeInviteKeyword = debounce(async (val: string) => {
 .modal-wrapper {
   // width: 330px;
   margin: 30px 0;
+  @include flex(column, flex-start, flex-start);
+  .n-select {
+    // width: 62%;
+    margin-bottom: 20px;
+  }
 }
 </style>

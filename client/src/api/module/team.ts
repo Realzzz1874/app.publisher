@@ -30,3 +30,9 @@ export const removeMemberApi = (teamId: string, removeUserId: string) => {
 export const changeRoleApi = (teamId: string, memberId: string, role: string) => {
   return axios.put<boolean>(`/team/${teamId}/${memberId}`, { role })
 }
+
+// 邀请成员
+//
+export const inviteMemberApi = (teamId: string, memberId: string, role: string) => {
+  return axios.post<boolean>(`/team/${teamId}`, { memberId, role })
+}
