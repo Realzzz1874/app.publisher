@@ -172,11 +172,11 @@ const creatorId = ref('')
 const members = ref<Team.Member[]>([])
 const roleOptions = [
   {
-    label: ROLES.manager,
+    label: '管理员',
     value: ROLES.manager
   },
   {
-    label: ROLES.guest,
+    label: '访客',
     value: ROLES.guest
   }
 ]
