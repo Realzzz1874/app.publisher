@@ -3,6 +3,7 @@ import mongoose from '../database/mongodb';
 import UserModel from '../model/user';
 import { ResponseStatus } from '../types';
 import TeamModel from '../model/team';
+
 export default class UserService {
   static async getUserByUsername(username: string) {
     return await UserModel.findOne({ username: username });
@@ -62,6 +63,6 @@ export default class UserService {
         },
         { email: { $regex: keyword, $options: 'i' } },
       ],
-    });
+    }).select(['username', 'email', '_id']);
   }
 }

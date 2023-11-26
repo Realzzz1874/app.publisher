@@ -3,7 +3,15 @@ import UserModel from '../model/user';
 import mongoose from '../database/mongodb';
 import HttpError from '../interface/HttpError';
 import { ResponseStatus } from '../types';
-import { ROLES } from '../enum';
+import { MESSAGE_CATEGORY, MESSAGE_STATUS, ROLES } from '../enum';
+import MessageService from './message';
+import {
+  format_message_addTeam,
+  format_message_dissolveTeam,
+  format_message_removeTeam,
+} from '../utils';
+import UserService from './user';
+import { IMessage } from '../model/message';
 
 export default class TeamService {
   // 获取 user 在 team 中的角色
@@ -114,6 +122,22 @@ export default class TeamService {
           }
         );
         await TeamModel.deleteOne({ _id: team._id });
+
+        // 给除了 userId 以外的 members 发消息
+        const sender = await UserService.getUserByUserId(userId);
+        const messages: IMessage[] = membersId
+          .filter((m) => m != userId)
+          .map((memberId) => {
+            return <IMessage>{
+              category: MESSAGE_CATEGORY.member,
+              senderId: userId,
+              receiverId: memberId,
+              status: MESSAGE_STATUS.unread,
+              content: format_message_dissolveTeam(sender!.username, team.name),
+            };
+          });
+        await MessageService.addMessageMulti(messages);
+
         await session.commitTransaction();
         return true;
       } catch {
@@ -165,6 +189,24 @@ export default class TeamService {
             },
           }
         );
+
+        // 给 removeUserId 写入一条消息
+        if (userId != removeUserId) {
+          // 如果自己离开就不发消息
+          const sender = await UserService.getUserByUserId(userId);
+          const team = await TeamModel.findById(teamId);
+          const message_content = format_message_removeTeam(
+            sender!.username,
+            team!.name
+          );
+          await MessageService.addMessage(
+            userId,
+            removeUserId,
+            MESSAGE_CATEGORY.member,
+            message_content
+          );
+        }
+
         await session.commitTransaction();
         return true;
       } catch {
@@ -219,6 +261,20 @@ export default class TeamService {
           role,
         });
         await member.save();
+
+        // 给 memberId 写入 一条信息
+        const sender = await UserService.getUserByUserId(userId);
+        const message_content = format_message_addTeam(
+          sender!.username,
+          team!.name
+        );
+        await MessageService.addMessage(
+          userId,
+          memberId,
+          MESSAGE_CATEGORY.member,
+          message_content
+        );
+
         await session.commitTransaction();
         return true;
       } catch {
