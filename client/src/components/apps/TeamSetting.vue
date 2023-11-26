@@ -24,7 +24,7 @@
       </div>
       <div class="right">
         <n-space size="small"
-          ><n-button type="success" @click="showInviteDialog = true"> 邀请成员 </n-button>
+          ><n-button type="success" @click="showInviteDialog = true"> 添加成员 </n-button>
           <!-- 只有 creator 才可以解散 -->
           <n-button
             type="error"
