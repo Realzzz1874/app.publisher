@@ -69,3 +69,19 @@ export namespace Team {
     name: string
   }
 }
+
+export namespace Message {
+  export interface MessageItem {
+    category: string
+    content: string
+    senderId: string
+    receiverId: string
+    sendAt: Date
+    status: string
+    _id: string
+  }
+  export interface ReadMessages {
+    list: Array<MessageItem>
+    total: number
+  }
+}

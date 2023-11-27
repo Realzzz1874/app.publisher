@@ -10,12 +10,37 @@ export default class MessageService {
     }).sort({ sendAt: -1 });
   }
 
+  // 获取已读消息列表，分页获取
+  static async getReadMessages(receiverId: string, page: number, size = 20) {
+    const skip = (page - 1) * size;
+    const total = await MessageModel.countDocuments({
+      receiverId,
+      status: MESSAGE_STATUS.read,
+    });
+    const list = await MessageModel.find({
+      receiverId,
+      status: MESSAGE_STATUS.read,
+    })
+      .sort({ sendAt: -1 })
+      .skip(skip)
+      .limit(size);
+    return { total, list };
+  }
+
   // 将消息标记为 read
-  static async readMessages(userId: string, messageIds: string[]) {
-    await MessageModel.updateMany(
-      { receiverId: userId, _id: { $in: messageIds } },
-      { $set: { status: MESSAGE_STATUS.read } }
-    );
+  static async readMessages(userId: string, messageIds?: string[]) {
+    if (messageIds?.length) {
+      await MessageModel.updateMany(
+        { receiverId: userId, _id: { $in: messageIds } },
+        { $set: { status: MESSAGE_STATUS.read } }
+      );
+    } else {
+      // 消息一键已读
+      await MessageModel.updateMany(
+        { receiverId: userId },
+        { $set: { status: MESSAGE_STATUS.read } }
+      );
+    }
   }
 
   // 写入一条消息

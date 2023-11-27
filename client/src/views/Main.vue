@@ -11,8 +11,15 @@
 </template>
 
 <script lang="ts" setup>
+import { onMounted } from 'vue'
 import HeaderNav from '@/components/main/HeaderNav.vue'
 import SlideNav from '@/components/main/SideNav.vue'
+import { UserStore } from '@/store/module/user'
+
+const userStore = UserStore()
+onMounted(async () => {
+  await userStore.getMyInfo()
+})
 </script>
 
 <style scoped lang="scss">
