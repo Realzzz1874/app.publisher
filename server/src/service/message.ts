@@ -2,6 +2,14 @@ import { MESSAGE_CATEGORY, MESSAGE_STATUS } from '../enum';
 import MessageModel, { IMessage } from '../model/message';
 
 export default class MessageService {
+  // 获取未读消息数量
+  static async countUnreadMessages(receiverId: string) {
+    return await MessageModel.countDocuments({
+      receiverId,
+      status: MESSAGE_STATUS.unread,
+    });
+  }
+
   // 获取未读消息列表 未读不分页，一次性全部获取
   static async getUnreadMessages(receiverId: string) {
     return await MessageModel.find({

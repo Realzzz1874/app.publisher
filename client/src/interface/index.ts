@@ -36,6 +36,15 @@ export namespace User {
     email: string
     _id: string
   }
+  export interface MyInfo {
+    token: string
+    user: BaseInfo
+    teams?: Array<{
+      _id: string
+      name: string
+      role: string
+    }>
+  }
   export interface InfoWithTeams extends BaseInfo {
     teams?: Array<{
       _id: string

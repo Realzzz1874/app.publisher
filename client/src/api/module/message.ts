@@ -1,6 +1,11 @@
 import axios from '../index'
 import { type Message } from '@/interface'
 
+// 获取未读信息数量
+export const getUnreadMessageCountApi = () => {
+  return axios.get<number>('/message/unread/count')
+}
+
 // 获取未读信息
 export const getUnreadMessagesApi = () => {
   return axios.get<Message.MessageItem[]>('/message/unread')

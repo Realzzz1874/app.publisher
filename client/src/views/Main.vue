@@ -19,6 +19,7 @@ import { UserStore } from '@/store/module/user'
 const userStore = UserStore()
 onMounted(async () => {
   await userStore.getMyInfo()
+  await userStore.getUnreadMessageCount()
 })
 </script>
 

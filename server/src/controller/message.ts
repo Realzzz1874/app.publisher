@@ -1,7 +1,13 @@
 import { Context } from '@/core/koa';
 import MessageService from '../service/message';
-import { ResponseStatus } from '../types';
 export default class MessageController {
+  // 获取未读消息数量
+  static async countUnreadMessages(ctx: Context) {
+    const userId = ctx.userId;
+    const res = await MessageService.countUnreadMessages(userId);
+    ctx.success(res);
+  }
+
   // 获取未读消息
   static async getUnreadMessages(ctx: Context) {
     const userId = ctx.userId;

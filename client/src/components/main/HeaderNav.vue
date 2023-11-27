@@ -5,7 +5,14 @@
     >
     <div class="nav-opt">
       <div class="user-info">
-        <n-icon :size="24" :component="NotificationsNoneOutlined" @click="showMessage = true" />
+        <n-badge processing dot :show="unReadMessageCount > 0">
+          <n-icon
+            color="#000"
+            :size="24"
+            :component="NotificationsNoneOutlined"
+            @click="showMessage = true"
+          />
+        </n-badge>
         <n-drawer v-model:show="showMessage" :width="502" placement="right">
           <n-drawer-content title="消息通知" closable>
             <MessageList />
@@ -19,7 +26,6 @@
         >
           <div class="user-block">
             <n-avatar round size="medium" :style="{ backgroundColor: '#36ad6a' }">
-              <!-- <n-icon :size="34" :component="PersonFilled" /> -->
               {{ avatarName }}
             </n-avatar>
             <span class="user-name">{{ userInfo?.username }}</span>
@@ -39,7 +45,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { NDropdown, NIcon, NAvatar, NDrawer, NDrawerContent, NGradientText } from 'naive-ui'
+import { NDropdown, NIcon, NAvatar, NDrawer, NDrawerContent, NGradientText, NBadge } from 'naive-ui'
 import { NotificationsNoneOutlined } from '@vicons/material'
 
 import { UserStore } from '@/store/module/user'
@@ -56,6 +62,9 @@ const goMain = () => {
 
 const userInfo = computed(() => {
   return userStore.userInfo
+})
+const unReadMessageCount = computed(() => {
+  return userStore.unreadMessageCount
 })
 const avatarName = computed(() => {
   return userStore.userInfo?.username.charAt(0).toLocaleUpperCase()

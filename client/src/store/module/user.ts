@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import piniaPersistConfig from '../helper/persist'
 import { getMyInfo } from '@/api/module/user'
+import { getUnreadMessageCountApi } from '@/api/module/message'
 
 interface User {
   token: string
@@ -10,6 +11,7 @@ interface User {
     name: string
     role: string
   }>
+  unreadMessageCount: number // 未读消息数量
 }
 
 export const UserStore = defineStore({
@@ -21,7 +23,8 @@ export const UserStore = defineStore({
       email: '',
       _id: ''
     },
-    teams: []
+    teams: [],
+    unreadMessageCount: 0
   }),
   getters: {},
   actions: {
@@ -44,6 +47,15 @@ export const UserStore = defineStore({
       this.token = ''
       this.userInfo = { username: '', email: '', _id: '' }
       this.teams = []
+    },
+    async getUnreadMessageCount() {
+      const res = await getUnreadMessageCountApi()
+      if (!isNaN(res.data)) {
+        this.unreadMessageCount = res.data
+      }
+    },
+    setUnreadMessageCount(count: number) {
+      this.unreadMessageCount = count
     }
   },
   persist: piniaPersistConfig('app_publisher_user')

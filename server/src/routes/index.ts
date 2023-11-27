@@ -39,6 +39,7 @@ router.put('/user/username', UserController.updateUsername); // 修改用户名�
 router.get('/users', UserController.findUsers); // 模糊查询用户 [username | email]
 // message
 router.get('/message/unread', MessageController.getUnreadMessages); // 获取未读消息
+router.get('/message/unread/count', MessageController.countUnreadMessages); // 获取未读消息数量
 router.get('/message/read', MessageController.getReadMessages); // 获取已读消息
 router.put('/message/read', MessageController.readMessages); // 将消息标记为已读
 
