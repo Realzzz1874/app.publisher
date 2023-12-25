@@ -1,0 +1,24 @@
+// COLORS
+
+$color_main: #18a058;
+$color_main_hover: #36ad6a;
+$color_font_black: #1b1d1d;
+$color_font_second: rgb(118, 124, 130);
+$color_font_white: #fff;
+$color_divider: rgb(239, 239, 245);
+$color_bg_grey: #f6f6f6;
+$color_bg_white: #fff;
+$color_border: rgb(224, 224, 230);
+
+// MIXIN
+@mixin flex($d, $j, $a) {
+  display: flex;
+  flex-direction: $d;
+  justify-content: $j;
+  align-items: $a;
+}
+
+@mixin wh($w, $h) {
+  width: $w;
+  height: $h;
+}
