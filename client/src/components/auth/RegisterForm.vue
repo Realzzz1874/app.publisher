@@ -96,6 +96,7 @@ const register = async () => {
         const res = await registerApi(registerForm)
         if (res?.data) {
           userStore.setToken(res.data.token)
+          userStore.setUser(res.data.user)
           message.success('注册成功')
           setTimeout(() => {
             router.replace('/')

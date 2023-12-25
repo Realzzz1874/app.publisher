@@ -18,6 +18,7 @@ export namespace Auth {
   }
   export interface LoginResDTO {
     token: string
+    user: User.BaseInfo
   }
   export interface RegisterDTO {
     username: string
