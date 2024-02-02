@@ -8,6 +8,7 @@
             <n-input
               v-model:value="teamName"
               maxlength="10"
+              show-count
               type="text"
               placeholder="请输入团队名称"
             />
