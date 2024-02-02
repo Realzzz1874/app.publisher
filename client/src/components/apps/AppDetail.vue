@@ -45,21 +45,23 @@
           </div>
           <div class="right-item">
             <span class="label">下载地址:</span>
-            <n-ellipsis style="max-width: 400px">
-              <span class="item-val">{{ appInfo.downloadUrl }}</span>
-            </n-ellipsis>
+            <div class="item-val">
+              <n-ellipsis style="max-width: 400px"
+                ><span>{{ appInfo.downloadUrl }}</span></n-ellipsis
+              >
+              <n-icon
+                style="margin-left: 4px; cursor: pointer"
+                :size="16"
+                :component="ContentCopyRound"
+                @click="copy"
+              />
+            </div>
           </div>
-          <!-- <div class="right-item">
-            <span class="label">App ID:</span>
-            <n-ellipsis style="max-width: 400px"
-              ><span class="item-val">{{ appInfo.id }}</span></n-ellipsis
-            >
-          </div> -->
           <div class="right-item">
-            <span class="label">今日下载次数:</span>
-            <span class="item-val">30</span>
-            <span class="label second">总下载次数:</span>
-            <span class="item-val">100</span>
+            <n-space>
+              <n-tag type="success" size="small"> 今日下载：30 </n-tag>
+              <n-tag type="info" size="small"> 总下载：100 </n-tag></n-space
+            >
           </div>
         </n-space>
       </div>
@@ -126,6 +128,8 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import useClipboard from 'vue-clipboard3'
+import { ContentCopyRound } from '@vicons/material'
 import {
   NTabs,
   NTabPane,
@@ -139,6 +143,7 @@ import {
   NRadio,
   NRadioGroup,
   NDataTable,
+  useMessage,
   type DataTableColumns
 } from 'naive-ui'
 import {
@@ -147,6 +152,9 @@ import {
   AdminPanelSettingsOutlined,
   CloudUploadOutlined
 } from '@vicons/material'
+
+const message = useMessage()
+const { toClipboard } = useClipboard()
 
 const props = defineProps<{
   teamId: string
@@ -203,7 +211,10 @@ const versionColumns = (): DataTableColumns<VersionRowData> => {
     },
     {
       title: '更新日志',
-      key: 'updateLog'
+      key: 'updateLog',
+      ellipsis: {
+        tooltip: true
+      }
     }
   ]
 }
@@ -225,13 +236,22 @@ const versionList = reactive([
     updateTime: '2023-02-11',
     size: '20.1M',
     downloadCount: 101,
-    updateLog: 'test'
+    updateLog: '修复很多bug，完善很多需求，做了很多设计'
   }
 ])
 
 function selectedVersionChange(keys: Array<string | number>) {
   console.log('keys', keys)
   selectedVersion.value = keys as number[]
+}
+
+async function copy() {
+  try {
+    await toClipboard(appInfo.downloadUrl)
+    message.success('复制成功')
+  } catch (e) {
+    console.error(e)
+  }
 }
 </script>
 
@@ -269,17 +289,19 @@ function selectedVersionChange(keys: Array<string | number>) {
     }
     .right {
       padding: 20px 0;
+      @include flex(column, space-around, flex-start);
       .right-item {
         color: $color_font_black;
         @include flex(row, flex-start, center);
         .label {
           display: block;
-          width: 100px;
-          text-align: right;
+          // width: 100px;
+          text-align: left;
         }
         .item-val {
           color: $color_font_second;
           margin-left: 10px;
+          @include flex(row, flex-start, center);
         }
       }
     }
