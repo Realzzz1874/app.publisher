@@ -5,7 +5,13 @@
         <span class="label">团队名称:</span>
         <template v-if="editable">
           <div class="name-input">
-            <n-input v-model:value="teamName" type="text" placeholder="请输入团队名称" />
+            <n-input
+              v-model:value="teamName"
+              maxlength="10"
+              show-count
+              type="text"
+              placeholder="请输入团队名称"
+            />
           </div>
           <n-space>
             <n-button strong secondary type="primary" @click="saveName"> 保存 </n-button>
