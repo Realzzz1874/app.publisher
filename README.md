@@ -1,1 +1,1 @@
-# app.publisher（发布者）
+# app.publisher（发布者号）
